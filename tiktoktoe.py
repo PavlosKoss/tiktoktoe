@@ -63,7 +63,9 @@ class App(tk.Tk):
         print(self.selected_level.get())
 
     def button_push(self):
-        game_play.game = game_play.Game_Play(self.player1_entry.get(), self.player2_entry.get(), self.cd1, self.cd2, self.selected_level.get())
+        game_play.player1 = game_play.Player(self.player1_entry.get(), self.cd1, self.selected_level.get())
+        game_play.player2 = game_play.Player(self.player2_entry.get(), self.cd2, self.selected_level.get())
+        game_play.game = game_play.TikTok(game_play.player1, game_play.player2)
         game_play.game.count = 0
         game_play.game.game_count = 0
         Game()
@@ -86,24 +88,24 @@ class Winner(tk.Tk):
             self.label_winner = tk.Label(self,borderwidth=2, relief="groove", text="The winner is:",
                                          font=("Arial", 12), width=30)
             self.label_winner_name = tk.Label(self, borderwidth=2, relief="groove",
-                                              text=f"{game_play.game.current_player()}", font=("Arial", 12), width=12)
+                                              text=f"{game_play.game.current_player().name}", font=("Arial", 12), width=12)
             self.label_winner_name.grid(column=0, columnspan=4, row=1)
         self.label_winner.grid(column=0,columnspan=4, row=0)
         self.label_score = tk.Label(self, borderwidth=2, relief="groove",
                                           text="The Score is", font=("Arial", 12), width=12)
         self.label_score.grid(column=0, columnspan=4, row=2, pady=(5,0))
         self.label_p1 = tk.Label(self, borderwidth=2, relief="groove",
-                                          text=f"{game_play.game.p1_name}", font=("Arial", 12), width=12)
+                                          text=f"{game_play.player1.name}", font=("Arial", 12), width=12)
         self.label_p1.grid(column=0, columnspan=2, row=3)
         self.label_p2 = tk.Label(self, borderwidth=2, relief="groove",
-                                 text=f"{game_play.game.p2_name}", font=("Arial", 12), width=12)
+                                 text=f"{game_play.player2.name}", font=("Arial", 12), width=12)
         self.label_p2.grid(column=2, columnspan=2, row=3)
         self.label_score_p1 = tk.Label(self, borderwidth=2, relief="groove",
-                                 text=f"{game_play.game.score_board[game_play.game.p1_name]}",
+                                 text=f"{game_play.game.score_board[game_play.player1]}",
                                        font=("Arial", 12), width=12)
         self.label_score_p1.grid(column=0, columnspan=2, row=4)
         self.label_score_p2 = tk.Label(self, borderwidth=2, relief="groove",
-                                 text=f"{game_play.game.score_board[game_play.game.p2_name]}",
+                                 text=f"{game_play.game.score_board[game_play.player2]}",
                                  font=("Arial", 12), width=12)
         self.label_score_p2.grid(column=2, columnspan=2, row=4)
         self.button_continue = ttk.Button(self, command=self.button1_push, text="Continue")
@@ -114,8 +116,8 @@ class Winner(tk.Tk):
     def button1_push(self):
         game_play.game.game_count += 1
         game_play.game.count = game_play.game.game_count%2
-        game_play.game.tablo[game_play.game.p1_name] = []
-        game_play.game.tablo[game_play.game.p2_name] = []
+        game_play.game.tablo[game_play.player1] = []
+        game_play.game.tablo[game_play.player2] = []
         Winner.destroy(self)
         Game()
 
@@ -167,30 +169,30 @@ class Game(tk.Tk):
         self.label9.grid(column=2, row=2, sticky=tk.W)
         self.label9.bind("<Button-1>", self.label9_click)
         self.label_now_plays = ttk.Label(self, borderwidth=2, relief="groove", text="   ", font=("Arial", 12), width=25)
-        self.label_now_plays.config(text="Current Player: {}".format(game_play.game.current_player()))
+        self.label_now_plays.config(text="Current Player: {}".format(game_play.game.current_player().name))
         self.label_now_plays.grid(column=0, columnspan=4, row=3,padx=(40,0), sticky=tk.S)
         self.score_board_label = tk.Label(self, borderwidth=2, relief="groove",anchor="center", text="Πίνακας Score",
                                            font=("Arial", 15), width=16)
         self.score_board_label.grid(column=0, columnspan=3, row=6, sticky=tk.NSEW, padx=(80,0), pady=(10,0))
-        self.score_board_p1 = tk.Label(self, borderwidth=2, relief="groove", text=f"{game_play.game.p1_name}",
+        self.score_board_p1 = tk.Label(self, borderwidth=2, relief="groove", text=f"{game_play.player1.name}",
                                         font=("Arial", 10), width=15)
         self.score_board_p1.grid(column=0, columnspan=2, row=7)
-        self.score_board_p2 = tk.Label(self, borderwidth=2, relief="groove", text=f"{game_play.game.p2_name}",
+        self.score_board_p2 = tk.Label(self, borderwidth=2, relief="groove", text=f"{game_play.player2.name}",
                                         font=("Arial", 10), width=15)
         self.score_board_p2.grid(column=2, columnspan=2, row=7)
         self.score_board_p1score = tk.Label(self, borderwidth=2, relief="groove",
-                                            text=f"{game_play.game.score_board[game_play.game.p1_name]}",
+                                            text=f"{game_play.game.score_board[game_play.player1]}",
                                             font=("Arial", 15), width=11)
         self.score_board_p1score.grid(column=0, columnspan=2, row=8)
         self.score_board_p2score = tk.Label(self, borderwidth=2, relief="groove",
-                                            text=f"{game_play.game.score_board[game_play.game.p2_name]}",
+                                            text=f"{game_play.game.score_board[game_play.player2]}",
                                             font=("Arial", 15), width=11)
         self.score_board_p2score.grid(column=2, columnspan=2, row=8)
 
     def check(self, number, label):
-        if number not in game_play.game.tablo[game_play.game.p1_name] + game_play.game.tablo[game_play.game.p1_name]:
-            if game_play.game.current_player() == game_play.game.p1_name:
-                game_play.game.tablo[game_play.game.p1_name].append(number)
+        if number not in game_play.game.tablo[game_play.player1] + game_play.game.tablo[game_play.player2]:
+            if game_play.game.current_player() == game_play.player1:
+                game_play.game.tablo[game_play.player1].append(number)
                 label.config(text='X')
                 if game_play.game.check_for_winner() or game_play.game.check_for_draw():
                     if game_play.game.check_for_winner():
@@ -198,11 +200,11 @@ class Game(tk.Tk):
                     Game.destroy(self)
                     Winner()
                 game_play.game.count += 1
-                self.label_now_plays.config(text="Current Player: {}".format(game_play.game.current_player()))
+                self.label_now_plays.config(text="Current Player: {}".format(game_play.game.current_player().name))
 
 
             else:
-                game_play.game.tablo[game_play.game.p2_name].append(number)
+                game_play.game.tablo[game_play.player2].append(number)
                 label.config(text='O')
                 if game_play.game.check_for_winner() or game_play.game.check_for_draw():
                     if game_play.game.check_for_winner():
@@ -210,12 +212,8 @@ class Game(tk.Tk):
                     Game.destroy(self)
                     Winner()
                 game_play.game.count += 1
-                self.label_now_plays.config(text="Current Player: {}".format(game_play.game.current_player()))
+                self.label_now_plays.config(text="Current Player: {}".format(game_play.game.current_player().name))
 
-
-
-
-            print(game_play.game.tablo, game_play.game.count)
         else:
             messagebox.showwarning(title='Wrong Choice', message='You have to chooce an empty place')
 
