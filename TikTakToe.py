@@ -29,6 +29,15 @@ class NormalComPlayer(Player):
     def play(self):
         pass
 
+class ScoreBoard():
+    def __init__(self, player1, player2):
+        self.player1 = player1
+        self.player2 = player2
+        self.board = {player1:0, player2:0}
+
+    def winner(self, player):
+        self.board[player] += 1
+
 
 class Table():
     def __init__(self, player1, player2):
@@ -73,7 +82,7 @@ class GameControler():
             else:
                 self.player2 = NormalComPlayer(player2_entry)
         self.tablo = Table(self.player1, self.player2)
-        self.score_board = {self.player1:0, self.player2:0}
+        self.score_board = ScoreBoard(self.player1, self.player2)
 
     def current_player(self):
         if len(self.tablo.played()) == 0:
@@ -125,7 +134,7 @@ class GameControler():
                 label.config(text='O')
             if self.check_for_winner() or self.check_for_draw():
                 if self.check_for_winner():
-                    self.score_board[self.current_player()] += 1
+                    self.score_board.winner(self.current_player())
                 return "destroy"
             self.count += 1
         else:
@@ -225,11 +234,11 @@ class Winner(tk.Tk):
                                  text=f"{gc.player2.name}", font=("Arial", 12), width=12)
         self.label_p2.grid(column=2, columnspan=2, row=3)
         self.label_score_p1 = tk.Label(self, borderwidth=2, relief="groove",
-                                       text=f"{gc.score_board[gc.player1]}",
+                                       text=f"{gc.score_board.board[gc.player1]}",
                                        font=("Arial", 12), width=12)
         self.label_score_p1.grid(column=0, columnspan=2, row=4)
         self.label_score_p2 = tk.Label(self, borderwidth=2, relief="groove",
-                                       text=f"{gc.score_board[gc.player2]}",
+                                       text=f"{gc.score_board.board[gc.player2]}",
                                        font=("Arial", 12), width=12)
         self.label_score_p2.grid(column=2, columnspan=2, row=4)
         self.button_continue = ttk.Button(self, command=self.button1_push, text="Continue")
@@ -297,11 +306,11 @@ class Game(tk.Tk):
                                        font=("Arial", 10), width=15)
         self.score_board_p2.grid(column=2, columnspan=2, row=7)
         self.score_board_p1score = tk.Label(self, borderwidth=2, relief="groove",
-                                            text=f"{gc.score_board[gc.player1]}",
+                                            text=f"{gc.score_board.board[gc.player1]}",
                                             font=("Arial", 15), width=11)
         self.score_board_p1score.grid(column=0, columnspan=2, row=8)
         self.score_board_p2score = tk.Label(self, borderwidth=2, relief="groove",
-                                            text=f"{gc.score_board[gc.player2]}",
+                                            text=f"{gc.score_board.board[gc.player2]}",
                                             font=("Arial", 15), width=11)
         self.score_board_p2score.grid(column=2, columnspan=2, row=8)
 
