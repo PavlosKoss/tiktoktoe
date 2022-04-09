@@ -10,4 +10,15 @@ def a_fuction():
 
 print(eval("a_fuction()"))
 
+class something():
+    def __init__(self):
+        self.b=2
+    def add(self):
+        a.append("23")
+print(a)
 
+a = []
+if __name__ == "__main__":
+    b = something()
+    b.add()
+    print(a)
