@@ -1,53 +1,79 @@
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
+import random
 
 
+# Class human player
 class Player():
 
     def __init__(self, name):
         self.name = name
 
     def play(self):
-        pass
+        print("human")
 
 
+# Class Computer Easy player
 class EasyComPlayer(Player):
 
     def __init__(self, name):
         super().__init__(name)
 
     def play(self):
-        pass
+        print("easycom")
 
 
+# Class Computer Normal player
 class NormalComPlayer(Player):
 
     def __init__(self, name):
         super().__init__(name)
 
     def play(self):
-        pass
+        print("normalcom")
 
+
+# Class που κρατάει το σκορ των νικών των παιχτών
 class ScoreBoard():
     def __init__(self, player1, player2):
         self.player1 = player1
         self.player2 = player2
-        self.board = {player1:0, player2:0}
+        self.board = {player1: 0, player2: 0}
 
+    # μέθοδος για την προσθήκη νίκης στο
     def winner(self, player):
         self.board[player] += 1
 
 
+# Class που κρατάει τον πίνακα των θέσεων που έχουν παιχτεί αν παίκτη.
 class Table():
     def __init__(self, player1, player2):
         self.player1 = player1
         self.player2 = player2
         self.tablo = {self.player1: [], self.player2: []}
 
+    # Τοποθετεί την επιλογή στο λεξικό
+    def place_move(self, player, number):
+        self.tablo[player].append(number)
+
+    # Επιστρέφει list με τους παιγμένους αριθμούς
     def played(self):
         return self.tablo[self.player1] + self.tablo[self.player2]
 
+    # Επιστρέφει αριθμό (για νίκη ή μπλοκάρισμα νίκης) ή None αν δεν υπάρχει
+    def ready_to_win(self, player):
+        pass
+
+    # Επιστρέφει αριθμό αν υπάρχει κενό στο κέντρο η σε μια γωνία ή None αν όχι
+    def center_or_corners(self):
+        pass
+
+    # Επιστρέφει μια τυχαία θέση από τις θέσεις του πίνακα που είναι κενή
+    def random_place(self, table=[1, 3, 7, 9]):
+        pass
+
+    # Επιστρέεφει list με τους αριθμούς που δεν παίχθηκαν
     def toplay(self):
         to_play = []
         for i in range(9):
@@ -67,8 +93,8 @@ class GameControler():
         self.game_count = 0
 
     def get_settings(self, player1_entry, player2_entry, cd1, cd2, selected_level):
-        if cd1 == "0":
-            player1 = Player(player1_entry)
+        if cd1 == 0:
+            self.player1 = Player(player1_entry)
         else:
             if selected_level == "Easy":
                 self.player1 = EasyComPlayer(player1_entry)
@@ -89,7 +115,6 @@ class GameControler():
             if self.game_count % 2 == 0:
                 return self.player1
             else:
-                self.count += 1
                 return self.player2
 
         if self.count % 2 == 0:
@@ -127,10 +152,10 @@ class GameControler():
     def check(self, number, label):
         if number not in self.tablo.played():
             if self.current_player() == self.player1:
-                self.tablo.tablo[self.player1].append(number)
+                self.tablo.place_move(self.player1, number)
                 label.config(text='X')
             else:
-                self.tablo.tablo[self.player2].append(number)
+                self.tablo.place_move(self.player2, number)
                 label.config(text='O')
             if self.check_for_winner() or self.check_for_draw():
                 if self.check_for_winner():
@@ -139,6 +164,7 @@ class GameControler():
             self.count += 1
         else:
             messagebox.showwarning(title='Wrong Choice', message='You have to chooce an empty place')
+
 
 class App(tk.Tk):
 
@@ -193,13 +219,13 @@ class App(tk.Tk):
         submit_button.grid(column=2, row=4, sticky=tk.S, padx=5, pady=5)
 
     def level_changed(self, event):
-        # εδω βάζουμε τον κώδικα για να πάρουμε την επιλογή.
-        print(self.selected_level.get())
+        pass
 
     def button_push(self):
         global gc
         gc = GameControler()
-        gc.get_settings(self.player1_entry.get(), self.player2_entry.get(), self.cd1, self.cd2, self.selected_level.get())
+        gc.get_settings(self.player1_entry.get(), self.player2_entry.get(), self.cd1.get(), self.cd2.get(),
+                        self.selected_level.get())
         App.destroy(self)
         Game()
 
@@ -257,13 +283,13 @@ class Winner(tk.Tk):
 
 class Game(tk.Tk):
 
-
     def __init__(self):
         super().__init__()
         self.geometry("400x400")
         self.title('TikTakToe')
         self.resizable(0, 0)
         self.create_widgets()
+        gc.current_player().play()
 
     def create_widgets(self):
         self.label1 = ttk.Label(self, borderwidth=2, relief="groove", text="   ", font=("Arial", 40), width=2)
@@ -318,48 +344,57 @@ class Game(tk.Tk):
         if gc.check(1, self.label1) == "destroy":
             Game.destroy(self)
             Winner()
-        else : self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
+        else:
+            self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
 
     def label2_click(self, event):
         if gc.check(2, self.label2) == "destroy":
             Game.destroy(self)
             Winner()
-        else: self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
+        else:
+            self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
 
     def label3_click(self, event):
         if gc.check(3, self.label3) == "destroy":
             Game.destroy(self)
             Winner()
-        else: self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
+        else:
+            self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
 
     def label4_click(self, event):
         if gc.check(4, self.label4) == "destroy":
             Game.destroy(self)
             Winner()
-        else: self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
+        else:
+            self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
 
     def label5_click(self, event):
         if gc.check(5, self.label5) == "destroy":
             Game.destroy(self)
             Winner()
-        else: self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
+        else:
+            self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
+
     def label6_click(self, event):
         if gc.check(6, self.label6) == "destroy":
             Game.destroy(self)
             Winner()
-        else: self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
+        else:
+            self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
 
     def label7_click(self, event):
         if gc.check(7, self.label7) == "destroy":
             Game.destroy(self)
             Winner()
-        else: self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
+        else:
+            self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
 
     def label8_click(self, event):
         if gc.check(8, self.label8) == "destroy":
             Game.destroy(self)
             Winner()
-        else: self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
+        else:
+            self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
 
     def label9_click(self, event):
         if gc.check(9, self.label9) == "destroy":
@@ -370,7 +405,5 @@ class Game(tk.Tk):
 
 
 if __name__ == "__main__":
-    app=App()
+    app = App()
     app.mainloop()
-
-
