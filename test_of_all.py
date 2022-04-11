@@ -15,5 +15,6 @@ for k in a:
                         c= j
 
 print(c)
-
+for i in range(1,10):
+    print(i)
 
