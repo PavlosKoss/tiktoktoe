@@ -5,7 +5,6 @@ import random
 import time
 
 
-
 # Class human player
 class Player():
 
@@ -23,6 +22,8 @@ class EasyComPlayer(Player):
         super().__init__(name)
 
     def play(self, table, other_player):
+        # Εδώ η μέθοδος play παίρνει έναν τυχαίο αριθμό που δεν έχει παιχτεί (table.rantom_place)
+        # και επιστρέφει κείμενο που θα χρησημοποιήσουμε σαν εντολή στη συνέχεια.
         a = 'self.label{}_click("<Button-1>")'.format(table.random_place())
         return a
 
@@ -34,19 +35,24 @@ class NormalComPlayer(Player):
         super().__init__(name)
 
     def play(self, table, other_player):
+        # Το ίδιο με την προηγούμενη αλλά εδώ ελέγχουμε αν ο παίχτης νικάει με μια κίνηση
         if table.ready_to_win(self) != None:
             a = 'self.label{}_click("<Button-1>")'.format(table.ready_to_win(self))
             return a
+        # Αν ο αντίπαλος νικάει με μια κίνηση
         if table.ready_to_win(other_player) != None:
             a = 'self.label{}_click("<Button-1>")'.format(table.ready_to_win(other_player))
             return a
+        # αν η κεντρική θέση είναι ελεύθερη
         if table.place_in_center() != None:
             a = 'self.label5_click("<Button-1>")'
             return a
+        # αν κάποια γωνία είναι ελεύθερη
         if table.place_in_corner() != None:
             a = 'self.label{}_click("<Button-1>")'.format(table.place_in_corner())
             return a
         else:
+            # επιλέγει μια τυχαία θέση
             a = 'self.label{}_click("<Button-1>")'.format(table.random_place())
             return a
 
@@ -56,19 +62,22 @@ class ScoreBoard():
     def __init__(self, player1, player2):
         self.player1 = player1
         self.player2 = player2
+        # λεξικό που κρατάει το σκορ
         self.board = {player1: 0, player2: 0}
 
-    # μέθοδος για την προσθήκη νίκης στο
+    # μέθοδος για την προσθήκη νίκης σε παίχτη
     def winner(self, player):
         self.board[player] += 1
 
 
-# Class που κρατάει τον πίνακα των θέσεων που έχουν παιχτεί αν παίκτη.
+# Class που κρατάει τον πίνακα των θέσεων που έχουν παιχτεί ανα παίκτη.
 class Table():
     def __init__(self, player1, player2):
         self.player1 = player1
         self.player2 = player2
+        # λεξικό που κρατάει τα σημεία που έχει παίξει ο κάθε παίχτης
         self.tablo = {self.player1: [], self.player2: []}
+        # το σύνολο των νικητήριων στηλών
         self.winning_series = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]]
 
     # Τοποθετεί την επιλογή στο λεξικό
@@ -95,14 +104,16 @@ class Table():
                                 return j
         return None
 
+    # Επιστρέφει το 5 αν δεν έχει παιχτεί αλλιώς None
     def place_in_center(self):
         if 5 not in self.played():
             return 5
         else:
             return None
 
+    # επιστρέφει μια τυχαία γωνιακή θέση άν υπάρχει αλλιώς None
     def place_in_corner(self):
-        if  all(i in self.played() for i in [1, 3, 7, 9]):
+        if all(i in self.played() for i in [1, 3, 7, 9]):
             return None
         else:
             while True:
@@ -114,7 +125,6 @@ class Table():
     def random_place(self):
         return random.choice(self.toplay())
 
-
     # Επιστρέεφει list με τους αριθμούς που δεν παίχθηκαν
     def toplay(self):
         to_play = []
@@ -122,6 +132,8 @@ class Table():
             if i not in self.played():
                 to_play.append(i)
         return to_play
+
+    # Διαχειριστής παιχνιδιού
 
 
 class GameControler():
@@ -133,8 +145,9 @@ class GameControler():
         self.score_board = None
         self.count = 0
         self.game_count = 0
-        self.winning_series = [[1, 2, 3], [1, 4, 7], [1, 5, 9], [4, 5, 6], [7, 8, 9], [2, 5, 8], [3, 6, 9], [3, 5, 7]]
 
+    # μέθοδος που συγκεντρώνει τα στοιχεία από την App και δημιουργεί τα αντικείμενα
+    # player1, player2, tablo & score_board
     def get_settings(self, player1_entry, player2_entry, cd1, cd2, selected_level):
         if cd1 == 0:
             self.player1 = Player(player1_entry)
@@ -153,6 +166,7 @@ class GameControler():
         self.tablo = Table(self.player1, self.player2)
         self.score_board = ScoreBoard(self.player1, self.player2)
 
+    # μέθοδος που επιστρέφει τον παιχτη που έχει σειρά να παίξει
     def current_player(self):
         if len(self.tablo.played()) == 0:
             if self.game_count % 2 == 0:
@@ -166,31 +180,38 @@ class GameControler():
         else:
             return self.player2
 
+    # επιστρέφεφι τον παίχτη που δεν έχει δειρά να παίξει
     def other_player(self):
         if self.current_player() == self.player1:
             return self.player2
         else:
             return self.player1
 
+    # σε περίπτωση νέου παιχνιδιού  αλλάζει τους counters και αδειάζει το tablo
     def new_game(self):
         self.game_count += 1
         self.count = self.game_count % 2
         self.tablo.tablo[self.player1] = []
         self.tablo.tablo[self.player2] = []
 
+    # ελέγχει αν ο παιχτης που έπαιξε νικάει την παρτίδα
     def check_for_winner(self):
-        for j in self.winning_series:
+        for j in self.tablo.winning_series:
             if all(i in self.tablo.tablo[self.current_player()] for i in j):
                 return True
         else:
             return False
 
+    # ελέγχει αν γέμισε το tablo οπότε και έχουμε ισοπαλία
     def check_for_draw(self):
         if len(self.tablo.played()) == 9:
             return True
         else:
             return False
 
+    # ελέγχει αν το επιλεγμένο κελί έχει παιχτεί οπότε και βλάζει μήνυμα.
+    # αν όχι ελέγχει ποιός παίχτης έπαιξε και δέινει την αντίστοιχη τιμή στο κελί (Χ ή Ο)
+    # τέλος ελέγχει αν υπάρχει νικητής ή ισοπαλία και αν ναι επιστρέφει destroy
     def check(self, number, label):
         if number not in self.tablo.played():
             if self.current_player() == self.player1:
@@ -216,11 +237,12 @@ class App(tk.Tk):
         self.title('Tik Tok Toe')
 
         # configure the grid
-        self.columnconfigure(0, weight=1)
+        self.columnconfigure(0, weight=3)
         self.columnconfigure(1, weight=3)
         self.columnconfigure(2, weight=3)
         self.create_widgets()
 
+    # στοιχεία παραθύρου
     def create_widgets(self):
         # player1
         player1_label = ttk.Label(self, text="Player1:")
@@ -249,10 +271,10 @@ class App(tk.Tk):
         # Computer Intelligence
         intell_label = ttk.Label(self, text='Computer Inteligence:  ')
         intell_label.grid(column=0, row=3, columnspan=2, sticky=tk.SE, padx=5, pady=5)
-
         self.selected_level = tk.StringVar()
         level = ('Easy', 'Normal')
         self.intell_choise = ttk.Combobox(self, textvariable=self.selected_level, values=level, state='readonly')
+        self.intell_choise.current(0)
         self.intell_choise.bind('<<ComboboxSelected>>', self.level_changed)
         self.intell_choise.grid(column=2, row=3, sticky=tk.W)
 
@@ -427,7 +449,6 @@ class Game(tk.Tk):
             self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
         if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
             eval(gc.current_player().play(gc.tablo, gc.other_player()))
-
 
     def label6_click(self, event):
         if gc.check(6, self.label6) == "destroy":
