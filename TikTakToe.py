@@ -56,6 +56,8 @@ class NormalComPlayer(Player):
             a = 'self.label{}_click("<Button-1>")'.format(table.random_place())
             return a
 
+        # TODO: Βαλε χρονοκαθυστέρηση.
+
 
 # Class που κρατάει το σκορ των νικών των παιχτών
 class ScoreBoard():
@@ -411,8 +413,10 @@ class Game(tk.Tk):
             Winner()
         else:
             self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
-        if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
-            eval(gc.current_player().play(gc.tablo, gc.other_player()))
+            if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
+                eval(gc.current_player().play(gc.tablo, gc.other_player()))
+
+
 
     def label2_click(self, event):
         if gc.check(2, self.label2) == "destroy":
@@ -420,8 +424,8 @@ class Game(tk.Tk):
             Winner()
         else:
             self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
-        if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
-            eval(gc.current_player().play(gc.tablo, gc.other_player()))
+            if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
+                eval(gc.current_player().play(gc.tablo, gc.other_player()))
 
     def label3_click(self, event):
         if gc.check(3, self.label3) == "destroy":
@@ -429,8 +433,8 @@ class Game(tk.Tk):
             Winner()
         else:
             self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
-        if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
-            eval(gc.current_player().play(gc.tablo, gc.other_player()))
+            if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
+                eval(gc.current_player().play(gc.tablo, gc.other_player()))
 
     def label4_click(self, event):
         if gc.check(4, self.label4) == "destroy":
@@ -438,8 +442,8 @@ class Game(tk.Tk):
             Winner()
         else:
             self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
-        if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
-            eval(gc.current_player().play(gc.tablo, gc.other_player()))
+            if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
+                eval(gc.current_player().play(gc.tablo, gc.other_player()))
 
     def label5_click(self, event):
         if gc.check(5, self.label5) == "destroy":
@@ -447,8 +451,8 @@ class Game(tk.Tk):
             Winner()
         else:
             self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
-        if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
-            eval(gc.current_player().play(gc.tablo, gc.other_player()))
+            if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
+                eval(gc.current_player().play(gc.tablo, gc.other_player()))
 
     def label6_click(self, event):
         if gc.check(6, self.label6) == "destroy":
@@ -456,8 +460,8 @@ class Game(tk.Tk):
             Winner()
         else:
             self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
-        if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
-            eval(gc.current_player().play(gc.tablo, gc.other_player()))
+            if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
+                eval(gc.current_player().play(gc.tablo, gc.other_player()))
 
     def label7_click(self, event):
         if gc.check(7, self.label7) == "destroy":
@@ -465,8 +469,8 @@ class Game(tk.Tk):
             Winner()
         else:
             self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
-        if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
-            eval(gc.current_player().play(gc.tablo, gc.other_player()))
+            if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
+                eval(gc.current_player().play(gc.tablo, gc.other_player()))
 
     def label8_click(self, event):
         if gc.check(8, self.label8) == "destroy":
@@ -474,8 +478,8 @@ class Game(tk.Tk):
             Winner()
         else:
             self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
-        if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
-            eval(gc.current_player().play(gc.tablo, gc.other_player()))
+            if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
+                eval(gc.current_player().play(gc.tablo, gc.other_player()))
 
     def label9_click(self, event):
         if gc.check(9, self.label9) == "destroy":
@@ -483,8 +487,8 @@ class Game(tk.Tk):
             Winner()
         else:
             self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
-        if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
-            eval(gc.current_player().play(gc.tablo, gc.other_player()))
+            if gc.current_player().play(gc.tablo, gc.other_player()) != 0:
+                eval(gc.current_player().play(gc.tablo, gc.other_player()))
 
 
 if __name__ == "__main__":
