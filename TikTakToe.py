@@ -42,27 +42,43 @@ class EasyComPlayer(Player):
        Μέθοδοι
        ----------
        play(table, other_player)
-       επιστρέφει 0
+       επιστρέφει μια τυχαία θέση που δεν έχει παιχτεί
        """
 
     def __init__(self, name):
         super().__init__(name)
 
     def play(self, table):
-        # Εδώ η μέθοδος play παίρνει έναν τυχαίο αριθμό που δεν έχει παιχτεί (table.rantom_place)
-        # και επιστρέφει κείμενο που θα χρησημοποιήσουμε σαν εντολή στη συνέχεια.
+        # Παίρνει έναν τυχαίο αριθμό που δεν έχει παιχτεί (table.rantom_place)
+        # και επιστρέφει μια θέση
         return table.random_place()
 
 
-# Class Computer Normal player
 class NormalComPlayer(Player):
+    """
+       Παίχτης - Υπολογιστής Normal
+
+       Πεδία
+       ----------
+       name : str
+       Όνομα παίχτη
+
+       Μέθοδοι
+       ----------
+       play(table)
+       Ελέγχει αν ο παίχτης μπορεί να νικήσει με μια κίνηση και επιστρέφει τη θέση
+       Ελέγχει αν ο αντίπαλος μπορεί να νικήσει με μια κίνηση και επιστρέφει τη θέση
+       Αν η κεντρική θέση είναι ελεύθερη την επιστρέφει
+       Ελέγχει αν υπάρχει γωνιακή θέση και επιστρέφει μια τυχαία γωνιακή θέση
+       Αν δεν ισχύει τίποτα απο τα παραπάνω επιστρέφει μια τυχαία θέση
+
+       """
 
     def __init__(self, name):
         super().__init__(name)
 
     def play(self, table):
-        # Το ίδιο με την προηγούμενη αλλά εδώ ελέγχουμε αν ο παίχτης νικάει με μια κίνησ
-
+        # Αν ο παίχτης νικάει με μια κίνηση
         if table.ready_to_win(self) != None:
             return table.ready_to_win(self)
         # Αν ο αντίπαλος νικάει με μια κίνηση
@@ -79,7 +95,7 @@ class NormalComPlayer(Player):
             return table.random_place()
 
 
-# Class που κρατάει το σκορ των νικών των παιχτών
+
 class ScoreBoard():
     def __init__(self, player1, player2):
         self.player1 = player1
