@@ -81,7 +81,6 @@ class Table():
 
     # Επιστρέφει list με τους παιγμένους αριθμούς
     def played(self):
-        print(self.tablo[self.player1] + self.tablo[self.player2])
         return self.tablo[self.player1] + self.tablo[self.player2]
 
     def x_or_o(self, number):
@@ -121,9 +120,7 @@ class Table():
         else:
             while True:
                 a = random.choice([1, 3, 7, 9])
-                print("first",a)
                 if a not in self.played():
-                    print("second", a)
                     return a
 
     # Επιστρέφει μια τυχαία θέση από τις θέσεις του πίνακα που είναι κενή
@@ -243,7 +240,6 @@ class GameControler():
                 if self.check_for_winner():
                     self.score_board.winner(self.current_player())
                     self.color_the_winning_line()
-                    time.sleep(1)
                 return "destroy"
             self.count += 1
         else:
@@ -343,7 +339,7 @@ class Winner(tk.Tk):
 
     def __init__(self):
         super().__init__()
-        self.geometry("270x270")
+        self.geometry("270x270+70+70")
         self.title('TikTakToe')
         self.resizable(0, 0)
         self.create_widgets()
@@ -396,7 +392,7 @@ class Game(tk.Tk):
 
     def __init__(self):
         super().__init__()
-        self.geometry("400x400")
+        self.geometry("400x400+50+50")
         self.title('TikTakToe')
         self.resizable(0, 0)
         self.create_widgets()
@@ -412,31 +408,40 @@ class Game(tk.Tk):
     def create_widgets(self):
         self.label1 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(1), font=("Arial", 40), width=2)
         self.label1.grid(column=0, row=0, padx=(110, 0), sticky=tk.W)
-        self.label1.bind("<Button-1>", self.label1_click)
+        if gc.couples != 3:
+            self.label1.bind("<Button-1>", self.label1_click)
         self.label2 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(2), font=("Arial", 40), width=2)
         self.label2.grid(column=1, row=0, sticky=tk.W)
-        self.label2.bind("<Button-1>", self.label2_click)
+        if gc.couples != 3:
+            self.label2.bind("<Button-1>", self.label2_click)
         self.label3 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(3), font=("Arial", 40), width=2)
         self.label3.grid(column=2, row=0, sticky=tk.W)
-        self.label3.bind("<Button-1>", self.label3_click)
+        if gc.couples != 3:
+            self.label3.bind("<Button-1>", self.label3_click)
         self.label4 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(4), font=("Arial", 40), width=2)
         self.label4.grid(column=0, padx=(110, 0), row=1, sticky=tk.W)
-        self.label4.bind("<Button-1>", self.label4_click)
+        if gc.couples != 3:
+            self.label4.bind("<Button-1>", self.label4_click)
         self.label5 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(5), font=("Arial", 40), width=2)
         self.label5.grid(column=1, row=1, sticky=tk.W)
-        self.label5.bind("<Button-1>", self.label5_click)
+        if gc.couples != 3:
+            self.label5.bind("<Button-1>", self.label5_click)
         self.label6 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(6), font=("Arial", 40), width=2)
         self.label6.grid(column=2, row=1, sticky=tk.W)
-        self.label6.bind("<Button-1>", self.label6_click)
+        if gc.couples != 3:
+            self.label6.bind("<Button-1>", self.label6_click)
         self.label7 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(7), font=("Arial", 40), width=2)
         self.label7.grid(column=0, padx=(110, 0), row=2, sticky=tk.W)
-        self.label7.bind("<Button-1>", self.label7_click)
+        if gc.couples != 3:
+            self.label7.bind("<Button-1>", self.label7_click)
         self.label8 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(8), font=("Arial", 40), width=2)
         self.label8.grid(column=1, row=2, sticky=tk.W)
-        self.label8.bind("<Button-1>", self.label8_click)
+        if gc.couples != 3:
+            self.label8.bind("<Button-1>", self.label8_click)
         self.label9 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(9), font=("Arial", 40), width=2)
         self.label9.grid(column=2, row=2, sticky=tk.W)
-        self.label9.bind("<Button-1>", self.label9_click)
+        if gc.couples != 3:
+            self.label9.bind("<Button-1>", self.label9_click)
         self.label_now_plays = ttk.Label(self, borderwidth=2, relief="groove", text="   ", font=("Arial", 12), width=25)
         self.label_now_plays.config(text="Current Player: {}".format(gc.current_player().name))
         self.label_now_plays.grid(column=0, columnspan=4, row=3, padx=(40, 0), sticky=tk.S)
