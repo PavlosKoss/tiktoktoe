@@ -97,6 +97,25 @@ class NormalComPlayer(Player):
 
 
 class ScoreBoard():
+    """
+        Πίνακας Σκορ
+        κρατάει το σκορ των νικών των παιχτών και αυξάνει το σκορ του νικητή
+
+        Πεδία
+        ----------
+        player1 : Player
+        player2 : Player
+        board : dict
+            Λεξικό με κλειδί τον παίχτη και δεδομένα το σκορ
+
+
+        Μέθοδοι
+        ----------
+        winner(player)
+        Αυξάνει κατά 1 το σκορ του νικητή
+
+        """
+
     def __init__(self, player1, player2):
         self.player1 = player1
         self.player2 = player2
