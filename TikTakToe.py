@@ -82,8 +82,8 @@ class NormalComPlayer(Player):
         if table.ready_to_win(self) != None:
             return table.ready_to_win(self)
         # Αν ο αντίπαλος νικάει με μια κίνηση
-        if table.ready_to_win(GameControler.other_player()) != None:
-            return table.ready_to_win(GameControler.other_player())
+        if table.ready_to_win(gc.other_player()) != None:
+            return table.ready_to_win(gc.other_player())
         # αν η κεντρική θέση είναι ελεύθερη
         if table.place_in_center() != None:
             return 5
@@ -103,8 +103,8 @@ class ScoreBoard():
 
         Πεδία
         ----------
-        player1 : Player
-        player2 : Player
+        player1 : Player()
+        player2 : Player()
         board : dict
             Λεξικό με κλειδί τον παίχτη και δεδομένα το σκορ
 
@@ -127,8 +127,49 @@ class ScoreBoard():
         self.board[player] += 1
 
 
-# Class που κρατάει τον πίνακα των θέσεων που έχουν παιχτεί ανα παίκτη.
+#
 class Table():
+    """
+            κρατά και διαχειρίζετε τον πίνακα των θέσεων που έχουν παιχτεί ανα παίκτη.
+
+
+            Πεδία
+            ----------
+            player1 : Player()
+            player2 : Player()
+            tablo : dict
+                Λεξικό με κλειδί τον παίχτη και δεδομένα τις θέσεις που έχει παίξει
+            winning_series : list
+                Πίνακας με τους νικητήριους συνδιασμούς θέσεων
+
+            Μέθοδοι
+            ----------
+            place_move(player, number)
+                τοποθετεί την κίνηση του παίχτη στο λεξικό
+
+            played()
+                επιστρέφει πίνακα με τις θέσεις που έχουν παιχτεί
+
+            toplay()
+                επιστρέφει πίνακα με τις θέσεις που δεν έχουν παιχτεί
+
+            ready_to_win(player)
+                Αν υπάρχει μια θέση που συμπληρώνει νικητήρια στήλη για τον παίχτη
+                την επιστρέφει αλλιώς επιστρέφει None
+
+            place_in_center()
+                Αν είναι κενή η κεντρική θέση την επιστρέφει αλλιώς επιστρέφει None
+
+            place_in_corner()
+                Αν υπάρχουν κενές γωνιακές θέσεις επιστρέφει μια τυχαία αλλιώς επιστρέφει None
+
+            random_place(self)
+                Επιστρέφει μια τυχαία θέση
+
+            """
+
+
+
     def __init__(self, player1, player2):
         self.player1 = player1
         self.player2 = player2
@@ -137,22 +178,26 @@ class Table():
         # το σύνολο των νικητήριων στηλών
         self.winning_series = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]]
 
-    # Τοποθετεί την επιλογή στο λεξικό
     def place_move(self, player, number):
         self.tablo[player].append(number)
 
-    # Επιστρέφει list με τους παιγμένους αριθμούς
     def played(self):
         return self.tablo[self.player1] + self.tablo[self.player2]
 
-    def x_or_o(self, number):
-        if number in self.tablo[self.player1]:
-            return"X"
-        if number in self.tablo[self.player2]:
-            return"Y"
-        else: return "  "
+    def toplay(self):
+        to_play = []
+        for i in range(1, 10):
+            if i not in self.played():
+                to_play.append(i)
+        return to_play
 
-    # Επιστρέφει αριθμό (για νίκη ή μπλοκάρισμα νίκης) ή None αν δεν υπάρχει
+    # def x_or_o(self, number):
+    #     if number in self.tablo[self.player1]:
+    #         return"X"
+    #     if number in self.tablo[self.player2]:
+    #         return"Y"
+    #     else: return "  "
+
     def ready_to_win(self, player):
         for k in self.winning_series:
             count = 0
@@ -168,14 +213,12 @@ class Table():
                                 return j
         return None
 
-    # Επιστρέφει το 5 αν δεν έχει παιχτεί αλλιώς None
     def place_in_center(self):
         if 5 not in self.played():
             return 5
         else:
             return None
 
-    # επιστρέφει μια τυχαία γωνιακή θέση άν υπάρχει αλλιώς None
     def place_in_corner(self):
         if all(i in self.played() for i in [1, 3, 7, 9]):
             return None
@@ -185,22 +228,37 @@ class Table():
                 if a not in self.played():
                     return a
 
-    # Επιστρέφει μια τυχαία θέση από τις θέσεις του πίνακα που είναι κενή
     def random_place(self):
         return random.choice(self.toplay())
 
-    # Επιστρέεφει list με τους αριθμούς που δεν παίχθηκαν
-    def toplay(self):
-        to_play = []
-        for i in range(1, 10):
-            if i not in self.played():
-                to_play.append(i)
-        return to_play
-
-    # Διαχειριστής παιχνιδιού
-
 
 class GameControler():
+    """
+        Διαχειριστής παιχνιδιού
+
+
+        Πεδία
+        ----------
+        player1 : Player()
+        player2 : Player()
+        tablo = Table()
+        score_board = ScoreBoard()
+        game = Game()
+        count : int
+            Μετρητής κινήσεων στην παρτίδα
+        game_count : int
+            Μετριτής παρτίδων
+        couples : int
+            1 για human - human, 2 for human - computer, 3 for computer - computer
+
+
+        Μέθοδοι
+        ----------
+        get_settings(self, player1_entry, player2_entry, cd1, cd2, selected_level)
+            Ελέγχει το είδος των παιχτών και δημιουργεί τα αντικείμενα Player1 & Player2
+            Δημιουργεί τα αντικείμενα
+
+        """
 
     def __init__(self):
         self.player1 = None
@@ -211,18 +269,6 @@ class GameControler():
         self.game_count = 0
         self.couples = 0  # 1 για human - human, 2 for human - computer, 3 for computer - computer
         game = None
-
-    def game_by_couple(self):
-        if self.player1.play(self.tablo) == 0 and self.player2.play(self.tablo) == 0:
-            self.couples = 1
-        if self.player1.play(self.tablo) != 0 and self.player2.play(self.tablo) != 0:
-            self.couples = 3
-        else:
-            self.couples = 2
-        self.game = Game()
-        self.game.mainloop()
-
-
 
     # μέθοδος που συγκεντρώνει τα στοιχεία από την App και δημιουργεί τα αντικείμενα
     # player1, player2, tablo & score_board
@@ -243,6 +289,16 @@ class GameControler():
                 self.player2 = NormalComPlayer(player2_entry)
         self.tablo = Table(self.player1, self.player2)
         self.score_board = ScoreBoard(self.player1, self.player2)
+
+    def game_by_couple(self):
+        if self.player1.play(self.tablo) == 0 and self.player2.play(self.tablo) == 0:
+            self.couples = 1
+        if self.player1.play(self.tablo) != 0 and self.player2.play(self.tablo) != 0:
+            self.couples = 3
+        else:
+            self.couples = 2
+        self.game = Game()
+        self.game.mainloop()
 
     # μέθοδος που επιστρέφει τον παιχτη που έχει σειρά να παίξει
     def current_player(self):
@@ -468,39 +524,39 @@ class Game(tk.Tk):
             eval('self.label{}_click("<Button-1>")'.format(gc.current_player().play(gc.tablo)))
 
     def create_widgets(self):
-        self.label1 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(1), font=("Arial", 40), width=2)
+        self.label1 = ttk.Label(self, borderwidth=2, relief="groove", text="  ", font=("Arial", 40), width=2)
         self.label1.grid(column=0, row=0, padx=(110, 0), sticky=tk.W)
         if gc.couples != 3:
             self.label1.bind("<Button-1>", self.label1_click)
-        self.label2 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(2), font=("Arial", 40), width=2)
+        self.label2 = ttk.Label(self, borderwidth=2, relief="groove", text="  ", font=("Arial", 40), width=2)
         self.label2.grid(column=1, row=0, sticky=tk.W)
         if gc.couples != 3:
             self.label2.bind("<Button-1>", self.label2_click)
-        self.label3 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(3), font=("Arial", 40), width=2)
+        self.label3 = ttk.Label(self, borderwidth=2, relief="groove", text="  ", font=("Arial", 40), width=2)
         self.label3.grid(column=2, row=0, sticky=tk.W)
         if gc.couples != 3:
             self.label3.bind("<Button-1>", self.label3_click)
-        self.label4 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(4), font=("Arial", 40), width=2)
+        self.label4 = ttk.Label(self, borderwidth=2, relief="groove", text="  ", font=("Arial", 40), width=2)
         self.label4.grid(column=0, padx=(110, 0), row=1, sticky=tk.W)
         if gc.couples != 3:
             self.label4.bind("<Button-1>", self.label4_click)
-        self.label5 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(5), font=("Arial", 40), width=2)
+        self.label5 = ttk.Label(self, borderwidth=2, relief="groove", text="  ", font=("Arial", 40), width=2)
         self.label5.grid(column=1, row=1, sticky=tk.W)
         if gc.couples != 3:
             self.label5.bind("<Button-1>", self.label5_click)
-        self.label6 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(6), font=("Arial", 40), width=2)
+        self.label6 = ttk.Label(self, borderwidth=2, relief="groove", text="  ", font=("Arial", 40), width=2)
         self.label6.grid(column=2, row=1, sticky=tk.W)
         if gc.couples != 3:
             self.label6.bind("<Button-1>", self.label6_click)
-        self.label7 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(7), font=("Arial", 40), width=2)
+        self.label7 = ttk.Label(self, borderwidth=2, relief="groove", text="  ", font=("Arial", 40), width=2)
         self.label7.grid(column=0, padx=(110, 0), row=2, sticky=tk.W)
         if gc.couples != 3:
             self.label7.bind("<Button-1>", self.label7_click)
-        self.label8 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(8), font=("Arial", 40), width=2)
+        self.label8 = ttk.Label(self, borderwidth=2, relief="groove", text="  ", font=("Arial", 40), width=2)
         self.label8.grid(column=1, row=2, sticky=tk.W)
         if gc.couples != 3:
             self.label8.bind("<Button-1>", self.label8_click)
-        self.label9 = ttk.Label(self, borderwidth=2, relief="groove", text=gc.tablo.x_or_o(9), font=("Arial", 40), width=2)
+        self.label9 = ttk.Label(self, borderwidth=2, relief="groove", text="  ", font=("Arial", 40), width=2)
         self.label9.grid(column=2, row=2, sticky=tk.W)
         if gc.couples != 3:
             self.label9.bind("<Button-1>", self.label9_click)
