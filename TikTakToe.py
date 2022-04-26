@@ -283,6 +283,7 @@ class GameControler():
         self.player2 = None
         self.tablo = None
         self.score_board = None
+        self.game = None
         self.count = 0
         self.game_count = 0
         self.couples = 0
@@ -423,8 +424,6 @@ class App(tk.Tk):
         super().__init__()
         self.geometry("450x150")
         self.title('Tik Tok Toe')
-
-        # configure the grid
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=6)
         self.columnconfigure(2, weight=3)
@@ -463,22 +462,15 @@ class App(tk.Tk):
         level = ('Easy', 'Normal')
         self.intell_choise1 = ttk.Combobox(self, textvariable=self.selected_level1, values=level, state='readonly')
         self.intell_choise1.current(0)
-        self.intell_choise1.bind('<<ComboboxSelected>>', self.level_changed1)
         self.intell_choise1.grid(column=3, row=0, sticky=tk.W)
         self.intell_choise2 = ttk.Combobox(self, textvariable=self.selected_level2, values=level, state='readonly')
         self.intell_choise2.current(0)
-        self.intell_choise2.bind('<<ComboboxSelected>>', self.level_changed2)
         self.intell_choise2.grid(column=3, row=1, sticky=tk.W)
 
-        # submit button
+        #Submit Button
         submit_button = ttk.Button(self, command=self.button_push, text="Submit")
         submit_button.grid(column=2, row=4, sticky=tk.S, padx=5, pady=5)
 
-    def level_changed1(self, event):
-        pass
-
-    def level_changed2(self, event):
-        pass
 
     def button_push(self):
         global gc
@@ -509,7 +501,7 @@ class Game(tk.Tk):
     def create_widgets(self):
         self.label1 = ttk.Label(self, borderwidth=2, relief="groove", text="  ", font=("Arial", 40), width=2)
         self.label1.grid(column=0, row=0, padx=(110, 0), sticky=tk.W)
-        if gc.couples != 3:
+        if gc.couples != 3 and gc.check_for_winner()==False and gc.check_for_draw()==False:
             self.label1.bind("<Button-1>", self.label1_click)
         self.label2 = ttk.Label(self, borderwidth=2, relief="groove", text="  ", font=("Arial", 40), width=2)
         self.label2.grid(column=1, row=0, sticky=tk.W)
@@ -624,12 +616,13 @@ class Game(tk.Tk):
             gc.click_for_computer()
 
 
-class Winner(tk.Tk):
+class Winner(tk.Toplevel):
 
     def __init__(self):
         super().__init__()
         self.geometry("270x270+250+250")
         self.title('TikTakToe')
+        self.grab_set()
         self.resizable(0, 0)
         self.create_widgets()
 
@@ -669,8 +662,9 @@ class Winner(tk.Tk):
 
     def button1_push(self):
         gc.new_game()
+        self.grab_release()
         gc.game.destroy()
-        Winner.destroy(self)
+        # Winner.destroy(self)
         gc.game_by_couple()
 
 
