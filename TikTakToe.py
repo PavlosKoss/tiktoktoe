@@ -586,7 +586,7 @@ class Game(tk.Tk):
 
     def label5_click(self, event):
         if gc.check(5, self.label5, self) == "destroy":
-            self.after(2000, self.open_winner)
+            self.after(1000, self.open_winner)
         else:
             gc.click_for_computer()
 
@@ -599,7 +599,7 @@ class Game(tk.Tk):
 
     def label7_click(self, event):
         if gc.check(7, self.label7, self) == "destroy":
-            self.after(2000, self.open_winner)
+            self.after(1000, self.open_winner)
         else:
             gc.click_for_computer()
 
@@ -664,13 +664,11 @@ class Winner(tk.Toplevel):
         gc.new_game()
         self.grab_release()
         gc.game.destroy()
-        # Winner.destroy(self)
         gc.game_by_couple()
 
 
     def button2_push(self):
         gc.game.destroy()
-        Winner.destroy(self)
 
 
 if __name__ == "__main__":
