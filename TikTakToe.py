@@ -7,7 +7,7 @@ import time
 
 
 # Class human player
-class Player():
+class Player:
     """
     Παίχτης - Άνθρωπος
 
@@ -79,19 +79,19 @@ class NormalComPlayer(Player):
 
     def play(self, table):
 
-        if table.ready_to_win(self) != None:
+        if table.ready_to_win(self) is not None:
             return table.ready_to_win(self)
-        if table.ready_to_win(gc.other_player()) != None:
+        if table.ready_to_win(gc.other_player()) is not None:
             return table.ready_to_win(gc.other_player())
-        if table.place_in_center() != None:
+        if table.place_in_center() is not None:
             return 5
-        if table.place_in_corner() != None:
+        if table.place_in_corner() is not None:
             return table.place_in_corner()
         else:
             return table.random_place()
 
 
-class ScoreBoard():
+class ScoreBoard:
     """
         Πίνακας Σκορ
         κρατάει το σκορ των νικών των παιχτών και αυξάνει το σκορ του νικητή
@@ -120,7 +120,7 @@ class ScoreBoard():
         self.board[player] += 1
 
 
-class Table():
+class Table:
     """
             κρατά και διαχειρίζετε τον πίνακα των θέσεων που έχουν παιχτεί ανα παίκτη.
 
@@ -189,9 +189,9 @@ class Table():
                     if all(number in self.played() for number in winning_no):
                         continue
                     else:
-                        for number in winning_no:
-                            if number not in self.played():
-                                return number
+                        for number1 in winning_no:
+                            if number1 not in self.played():
+                                return number1
         return None
 
     def place_in_center(self):
@@ -213,7 +213,7 @@ class Table():
         return random.choice(self.toplay())
 
 
-class GameControler():
+class GameControler:
     """
         Διαχειριστής παιχνιδιού
 
@@ -402,9 +402,8 @@ class PlayTwoComputers(Thread):
 
         """
 
-    def __init__(self, gc, game):
+    def __init__(self, game):
         super().__init__()
-        self.gc = gc
         self.game = game
 
     def run(self):
@@ -554,10 +553,10 @@ class Game(tk.Tk):
         super().__init__()
         self.geometry("250x400+50+50")
         self.title('TikTakToe')
-        self.resizable(0, 0)
+        self.resizable(False, False)
         self.create_widgets()
         if gc.couples == 3:
-            play = PlayTwoComputers(gc, self)
+            play = PlayTwoComputers(self)
             play.start()
             self.after(10000, self.open_winner)
 
@@ -573,7 +572,7 @@ class Game(tk.Tk):
         self.camvas.grid(column=0, columnspan=2, row=0)
         self.label1 = ttk.Label(self, text="", font=("Arial", 40), width=2)
         self.label1.place(x=18, y=6)
-        if gc.couples != 3 and gc.check_for_winner() == False and gc.check_for_draw() == False:
+        if gc.couples != 3 and gc.check_for_winner() is False and gc.check_for_draw() is False:
             self.label1.bind("<Button-1>", self.label1_click)
         self.label2 = ttk.Label(self, text="", font=("Arial", 40), width=2)
         self.label2.place(x=85, y=6)
@@ -690,7 +689,7 @@ class Winner(tk.Toplevel):
 
     def __init__(self):
         super().__init__()
-        self.geometry("300x270+250+250")
+        self.geometry("350x200+250+250")
         self.title('TikTakToe')
         self.grab_set()
         self.resizable(0, 0)
@@ -699,36 +698,28 @@ class Winner(tk.Toplevel):
     def create_widgets(self):
         if gc.check_for_winner():
 
-            self.label_winner = tk.Label(self, borderwidth=2, relief="groove", text="The winner is:",
-                                         font=("Arial", 12), width=30)
-            self.label_winner_name = tk.Label(self, borderwidth=2, relief="groove",
-                                              text=f"{gc.current_player().name}", font=("Arial", 12), width=20)
-            self.label_winner_name.grid(column=0, columnspan=4, row=1)
+            self.label_winner = tk.Label(self, text="The winner is:",
+                                         font=("Arial", 12))
+            self.label_winner.grid(column=0, row=0)
+            self.label_winner_name = tk.Label(self,text=f"{gc.current_player().name}", font=("Arial", 14), width=24)
+            self.label_winner_name.grid(column=0, columnspan=2, row=1)
         else:
-            self.label_winner = tk.Label(self, borderwidth=2, relief="groove", text="The Game is DRAW",
-                                         font=("Arial", 12), width=30)
-        self.label_winner.grid(column=0, columnspan=4, row=0)
-        self.label_score = tk.Label(self, borderwidth=2, relief="groove",
-                                    text="The Score is", font=("Arial", 12), width=12)
-        self.label_score.grid(column=0, columnspan=4, row=2, pady=(5, 0))
-        self.label_p1 = tk.Label(self, borderwidth=2, relief="groove",
-                                 text=f"{gc.player1.name}", font=("Arial", 8), width=24)
-        self.label_p1.grid(column=0, columnspan=2, row=3)
-        self.label_p2 = tk.Label(self, borderwidth=2, relief="groove",
-                                 text=f"{gc.player2.name}", font=("Arial", 8), width=24)
-        self.label_p2.grid(column=2, columnspan=2, row=3)
-        self.label_score_p1 = tk.Label(self, borderwidth=2, relief="groove",
-                                       text=f"{gc.score_board.board[gc.player1]}",
-                                       font=("Arial", 12), width=12)
-        self.label_score_p1.grid(column=0, columnspan=2, row=4)
-        self.label_score_p2 = tk.Label(self, borderwidth=2, relief="groove",
-                                       text=f"{gc.score_board.board[gc.player2]}",
-                                       font=("Arial", 12), width=12)
-        self.label_score_p2.grid(column=2, columnspan=2, row=4)
+            self.label_winner = tk.Label(self, text="The Game is DRAW", font=("Arial", 12), width=30)
+        self.label_winner.grid(column=0, columnspan=2, row=0)
+        self.label_score = tk.Label(self, text="The Score is", font=("Arial", 12), width=12)
+        self.label_score.grid(column=0, columnspan=2, row=2, pady=(5, 0))
+        self.label_p1 = tk.Label(self, text=f"{gc.player1.name}", font=("Arial", 9), width=24)
+        self.label_p1.grid(column=0, row=3)
+        self.label_p2 = tk.Label(self,text=f"{gc.player2.name}", font=("Arial", 9), width=24)
+        self.label_p2.grid(column=1, row=3)
+        self.label_score_p1 = tk.Label(self, text=f"{gc.score_board.board[gc.player1]}", font=("Arial", 12), width=12)
+        self.label_score_p1.grid(column=0, row=4)
+        self.label_score_p2 = tk.Label(self, text=f"{gc.score_board.board[gc.player2]}", font=("Arial", 12), width=12)
+        self.label_score_p2.grid(column=1, row=4)
         self.button_continue = ttk.Button(self, command=self.button1_push, text="Continue")
-        self.button_continue.grid(column=0, row=5, sticky=tk.E, padx=1, pady=1)
+        self.button_continue.grid(column=0, row=5, padx=1, pady=20)
         self.button_end = ttk.Button(self, command=self.button2_push, text="End")
-        self.button_end.grid(column=3, row=5, sticky=tk.W, padx=1, pady=1)
+        self.button_end.grid(column=1, row=5, padx=1, pady=20)
 
     def button1_push(self):
         gc.new_game()
