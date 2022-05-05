@@ -562,6 +562,7 @@ class PlayTwoComputers(Thread):
             # Μέσα στην if εκτελείται η check και μετά επιστρέφει
             if gc.check(number, eval(f"self.game.label{number}"), self.game) == "destroy":
                 break
+        self.game.open_winner()
 
 
 class App(tk.Tk):
@@ -587,10 +588,6 @@ class App(tk.Tk):
 
         Μέθοδοι
         ----------
-        create_widgets()
-        δημιουργεί τα στοιχεία του παραθύρου:
-
-
         button_push()
         συμβάν κατά το πάτημα του submit_button
         δημιουργεί ένα global αντικείμενο GameControler και στη συμέχεια καλή την get_settings μέθοδο
@@ -607,13 +604,9 @@ class App(tk.Tk):
         self.columnconfigure(1, weight=6)
         self.columnconfigure(2, weight=3)
         self.columnconfigure(3, weight=1)
-        self.create_widgets()
-
-    # στοιχεία παραθύρου
-    def create_widgets(self):
         # player1
-        player1_label = ttk.Label(self, text="Player1:")
-        player1_label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
+        self.player1_label = ttk.Label(self, text="Player1:")
+        self.player1_label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
 
         self.player1_entry = ttk.Entry(self)
         self.player1_entry.grid(column=1, row=0, sticky=tk.E, padx=5, pady=5)
@@ -624,8 +617,8 @@ class App(tk.Tk):
         self.p1_iscom.grid(column=2, row=0, sticky=tk.W, padx=5, pady=5)
 
         # player2
-        player2_label = ttk.Label(self, text="Player2:")
-        player2_label.grid(column=0, row=1, sticky=tk.W, padx=5, pady=5)
+        self.player2_label = ttk.Label(self, text="Player2:")
+        self.player2_label.grid(column=0, row=1, sticky=tk.W, padx=5, pady=5)
 
         self.player2_entry = ttk.Entry(self)
         self.player2_entry.grid(column=1, row=1, sticky=tk.E, padx=5, pady=5)
@@ -663,7 +656,9 @@ class Game(tk.Tk):
 
     """
         Παράθυρο παιχνιδιού
-        κατά την αρχικοποίηση ελέγχει αν παίζουν δύο υπολογιστές και αν ναι δημιουργεί ένα αντικείμενο
+        κατά την αρχικοποίηση καλεί τις μεθόδους geometry(ορίζει το μέγεθος και την θέση του παραθύρου),
+        title(λεκτικό για τον τίτλο του παραθύρου), resizable(δεν επιτρέπει την αλλαγή των διαστάσεων
+        του παραθύρου), ελέγχει αν παίζουν δύο υπολογιστές και αν ναι δημιουργεί ένα αντικείμενο
         PlayTwoComputers και καλεί την μέθοδο του run(), στη συνέχεια καλεί την open_winner με καθυστέρηση
         10 δευτερολέπτων για να προλάβουν να γίνουν οι κινήσεις των παικτών.
         Αν δεν παίζουν 2 υπολογιστές ελέγχει αν παίζει human και αν όχι εκτελεί την κίνηση του υπολογιστή
@@ -696,10 +691,6 @@ class Game(tk.Tk):
 
         Μέθοδοι
         ----------
-
-        create_widgets()
-        δημιουργεί τα στοιχεία του παραθύρου
-
         open_winner()
         καλεί το TopLevel Winner
 
@@ -718,21 +709,7 @@ class Game(tk.Tk):
         self.geometry("250x400+50+50")
         self.title('TikTakToe')
         self.resizable(False, False)
-        self.create_widgets()
-        # αν οι αντίπαλοι είναι δύο υπολογιστές διμιουργέι ένα Thread αντικείμενο (play)
-        # και καλεί την start του αντικειμένου ώστε να εκτελεστουν οι κινήσεις χωρίς να διακοπεί η
-        # επανάλειψη του παραθύρου και να μπορούμε να της βλέπουμε στην οθόνη.
-        # στη συνέχεια περιμένουμε 10 δευτερόλεπτα και ανοίγουμε το παράθυρο νίκης ή ισσοπαλίας.
-        if gc.couples == 3:
-            play = PlayTwoComputers(self)
-            play.start()
-            self.after(10000, self.open_winner)
-        # διαφορετικά αν ο παίκτης που παίζει είναι υπολογιστής καλεί την μέθοδο play του παίχτη και
-        # καλεί την bind του αντίστοιχου label.
-        elif gc.current_player().play(gc.tablo) != 0:
-            eval('self.label{}_click("<Button-1>")'.format(gc.current_player().play(gc.tablo)))
 
-    def create_widgets(self):
         self.camvas = tk.Canvas(self, width=220, height=220)
         self.camvas.create_line(68, 0, 68, 215, width=4, fill="grey")
         self.camvas.create_line(140, 0, 140, 215, width=4, fill="grey")
@@ -796,60 +773,73 @@ class Game(tk.Tk):
                                             font=("Arial", 15), width=11)
         self.score_board_p2score.grid(column=1, row=8)
 
+        # αν οι αντίπαλοι είναι δύο υπολογιστές διμιουργέι ένα Thread αντικείμενο (play)
+        # και καλεί την start του αντικειμένου ώστε να εκτελεστουν οι κινήσεις χωρίς να διακοπεί η
+        # επανάλειψη του παραθύρου και να μπορούμε να της βλέπουμε στην οθόνη.
+        # στη συνέχεια περιμένουμε 10 δευτερόλεπτα και ανοίγουμε το παράθυρο νίκης ή ισσοπαλίας.
+        if gc.couples == 3:
+            play = PlayTwoComputers(self)
+            play.start()
+        # διαφορετικά αν ο παίκτης που παίζει είναι υπολογιστής καλεί την μέθοδο play του παίχτη και
+        # καλεί την bind του αντίστοιχου label.
+        elif gc.current_player().play(gc.tablo) != 0:
+            eval('self.label{}_click("<Button-1>")'.format(gc.current_player().play(gc.tablo)))
+
+
     def open_winner(self):
         Winner()
 
     def label1_click(self, event):
         if gc.check(1, self.label1, self) == "destroy":
-            self.after(1000, self.open_winner)
+            self.open_winner()
         else:
             gc.click_for_computer()
 
     def label2_click(self, event):
         if gc.check(2, self.label2, self) == "destroy":
-            self.after(1000, self.open_winner)
+            self.open_winner()
         else:
             gc.click_for_computer()
 
     def label3_click(self, event):
         if gc.check(3, self.label3, self) == "destroy":
-            self.after(1000, self.open_winner)
+            self.open_winner()
         else:
             gc.click_for_computer()
 
     def label4_click(self, event):
         if gc.check(4, self.label4, self) == "destroy":
-            self.after(1000, self.open_winner)
+            self.open_winner()
         else:
             gc.click_for_computer()
 
     def label5_click(self, event):
         if gc.check(5, self.label5, self) == "destroy":
-            self.after(1000, self.open_winner)
+            self.open_winner()
         else:
             gc.click_for_computer()
 
     def label6_click(self, event):
         if gc.check(6, self.label6, self) == "destroy":
-            self.after(1000, self.open_winner)
+            self.open_winner()
         else:
             gc.click_for_computer()
 
     def label7_click(self, event):
         if gc.check(7, self.label7, self) == "destroy":
-            self.after(1000, self.open_winner)
+            self.open_winner()
         else:
             gc.click_for_computer()
 
     def label8_click(self, event):
         if gc.check(8, self.label8, self) == "destroy":
-            self.after(1000, self.open_winner)
+            self.open_winner()
         else:
             gc.click_for_computer()
 
     def label9_click(self, event):
         if gc.check(9, self.label9, self) == "destroy":
-            self.after(1000, self.open_winner)
+            self.open_winner()
         else:
             gc.click_for_computer()
 
