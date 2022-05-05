@@ -8,6 +8,7 @@ import time
 
 # Class human player
 class Player:
+
     """
     Παίχτης - Άνθρωπος
 
@@ -31,6 +32,7 @@ class Player:
 
 # Class Computer Easy player
 class EasyComPlayer(Player):
+
     """
        Παίχτης - Υπολογιστής easy
 
@@ -55,6 +57,7 @@ class EasyComPlayer(Player):
 
 
 class NormalComPlayer(Player):
+
     """
        Παίχτης - Υπολογιστής Normal
 
@@ -92,6 +95,7 @@ class NormalComPlayer(Player):
 
 
 class ScoreBoard:
+
     """
         Πίνακας Σκορ
         κρατάει το σκορ των νικών των παιχτών και αυξάνει το σκορ του νικητή
@@ -121,6 +125,7 @@ class ScoreBoard:
 
 
 class Table:
+
     """
             κρατά και διαχειρίζετε τον πίνακα των θέσεων που έχουν παιχτεί ανα παίκτη.
 
@@ -214,6 +219,7 @@ class Table:
 
 
 class GameControler:
+
     """
         Διαχειριστής παιχνιδιού
 
@@ -276,6 +282,29 @@ class GameControler:
         """
 
     def __init__(self):
+        """
+        Αρχικοποιεί τα πεδία της GameControler
+
+        Παράμετροι
+        ----------
+        player1 : Player
+            δημιουργία αντικειμένου παίκτη για τον 1ο παίκτη
+        player2 : Player
+            δημιουργία αντικειμένου παίκτη για τον 1ο παίκτη
+        score_board : ScoreBoard
+            δημιουργία αντικειμένου score board
+        game : Game
+            δημιουργία αντικειμένου Game
+        count : int
+            μεταβλητή που μετράει τις κινήσεις των παιχτών
+        game_count : int
+            μεταβλητή που μετράει τον αριθμό των παιχνιδιών
+        couples : int
+            μεταβλητή που χαρατηρίζει το ζευγάρι των παιχτών:
+                1 = human vs humman
+                2 = human vs computer
+                3 = computer vs computer
+        """
         self.player1 = None
         self.player2 = None
         self.tablo = None
@@ -286,6 +315,23 @@ class GameControler:
         self.couples = 0
 
     def get_settings(self, player1_entry, player2_entry, cd1, cd2, selected_level1, selected_level2):
+        """
+        Ελέγχει το είδος των παιχτών και δημιουργεί τα αντικείμενα Player1 & Player2
+        Δημιουργεί τα αντικείμενα tablo & score_board
+
+        Παράμετροι
+        __________
+        player1_entry: str
+        player2_entry: str
+        cd1: int (0 or 1)
+        cd2: int (0 or 1)
+        selected_level1: str
+        selected_level2: str
+
+        Επιστρέφει
+        __________
+        None
+        """
         if cd1 == 0:
             self.player1 = Player(player1_entry)
         else:
@@ -304,9 +350,21 @@ class GameControler:
         self.score_board = ScoreBoard(self.player1, self.player2)
 
     def game_by_couple(self):
-        if self.player1.play(self.tablo) == 0 and self.player2.play(self.tablo) == 0:
+        """
+        Ελέγχει το ζευγάρι των παιχτών και ορίζει την couples.
+        Έπειτα δημιουργεί ένα αντικείμενο Game() και το εκτελεί
+
+        Παράμετροι
+        __________
+        None
+
+        Επιστρέφει
+        __________
+        None
+        """
+        if type(self.player1) == Player and type(self.player2) == Player:
             self.couples = 1
-        if self.player1.play(self.tablo) != 0 and self.player2.play(self.tablo) != 0:
+        if type(self.player1) != Player and type(self.player2) != Player:
             self.couples = 3
         else:
             self.couples = 2
@@ -314,6 +372,17 @@ class GameControler:
         self.game.mainloop()
 
     def current_player(self):
+        """
+        ελέγχει τον counter και αν  είναι ζηγός ο παίχτης είναι ο player1 αλλιώς ο player2
+
+        Παράμετροι
+        __________
+        None
+
+        Επιστρέφει
+        __________
+        player1 or player2
+        """
         if self.count % 2 == 0:
 
             return self.player1
@@ -321,18 +390,50 @@ class GameControler:
             return self.player2
 
     def other_player(self):
+        """
+        επιστρέφει τον παίχτη που δεν παίζει αυτή τη στιγμή
+
+        Παράμετροι
+        __________
+        None
+
+        Επιστρέφει
+        __________
+        player1 or player2
+        """
         if self.current_player() == self.player1:
             return self.player2
         else:
             return self.player1
 
     def new_game(self):
+        """
+        αλλάζει τους counters και αδειάζει το tablo αν ο game_count δεν διαιρήτε με το μηδέν
+        δίνει στον count την 1 για να παίξει πρότος ο δευτερος παίχτης
+        Παράμετροι
+        __________
+        None
+
+        Επιστρέφει
+        __________
+        None
+        """
         self.game_count += 1
         self.count = self.game_count % 2
         self.tablo.tablo[self.player1] = []
         self.tablo.tablo[self.player2] = []
 
     def check_for_winner(self):
+        """
+        ελέγχει αν ο παίχτης που παίζει τώρα έχει συμπληρώσει κάποια νικητήρια στήλη
+        Παράμετροι
+        __________
+        None
+
+        Επιστρέφει
+        __________
+        True or False
+        """
         for j in self.tablo.winning_series:
             if all(i in self.tablo.tablo[self.current_player()] for i in j):
                 return True
@@ -340,12 +441,26 @@ class GameControler:
             return False
 
     def check_for_draw(self):
+        """
+        ελέγχει αν έχουν παιχτεί όλες οι θέσεις
+        Παράμετροι
+        __________
+        None
+
+        Επιστρέφει
+        __________
+        True or False
+        """
         if len(self.tablo.played()) == 9:
             return True
         else:
             return False
 
     def click_for_computer(self):
+        """
+        προσπαθεί να παίξει για τον υπολογιστή αν ο παίχτης είναι human
+        επιστρέφει None οπότε αποτυγχάνει και δεν κάνει κάτι
+        """
         try:
             eval('self.game.label{}_click("<Button-1>")'.format(
                 self.current_player().play(self.tablo)))
@@ -353,6 +468,24 @@ class GameControler:
             pass
 
     def check(self, number, label, game):
+        """
+        ελέγχει αν το επιλεγμένο κελί έχει παιχτεί οπότε και εμφανίζει μήνυμα.
+        αν όχι ελέγχει ποιός παίχτης έπαιξε καλεί την tablo.place_move για να τοποθετήσει την κίνηση στο tablo,
+        δίνει το αντίστοιχο text στο label (Χ ή Ο) και αυξάνει τον count,
+        αλλάζει το όνομα του παίχτη στο label_now_plays ώστε να δείχνει τον παίχτη που έχει σειρά να παίξει
+        τέλος ελέγχει αν υπάρχει νικητής ή ισοπαλία και αν ναι επιστρέφει destroy
+        Παράμετροι
+        ----------
+        number: int (1 to 9)
+            αριθμός που δειλώνει την θέση που θα παίξει ο παίχτης
+        label: Game.label'n'
+            το label στο οποίο θα γίνει η κίνηση
+        game: Game
+
+        Επιστρέφει
+        ----------
+        "destroy" αν υπάρχει νικητής ή αν το παιχνίδι είναι ισόπαλο
+        """
         if number not in self.tablo.played():
             if self.current_player() == self.player1:
                 self.tablo.place_move(self.player1, number)
@@ -372,6 +505,17 @@ class GameControler:
             messagebox.showwarning(title='Wrong Choice', message='You have to choose an empty place')
 
     def color_the_winning_line(self):
+        """
+        βρήσκει ποιά είναι η νικηρήρια σειρά και χρωματίζει κόκκινα τα γράμματα στα labels
+
+        Παράμετροι
+        ----------
+        None
+
+        Επιστρέφει
+        ----------
+        None
+        """
         count = 0
         for i in self.tablo.winning_series:
             if all(j in self.tablo.tablo[self.current_player()] for j in i):
@@ -383,6 +527,7 @@ class GameControler:
 
 
 class PlayTwoComputers(Thread):
+
     """
         Θυγατρική κλάση της Thread για την εκτέλεση κώδικα σε ξεχωριστό tread ωστε να ανανεώνεται
         το παράθυρο του παιχνιδιού όταν και οι δύο παίχτες είναι ο υπολογιστής.
@@ -403,6 +548,10 @@ class PlayTwoComputers(Thread):
         """
 
     def __init__(self, game):
+        """
+        
+        :param game:
+        """
         super().__init__()
         self.game = game
 
@@ -416,16 +565,12 @@ class PlayTwoComputers(Thread):
 
 
 class App(tk.Tk):
+
     """
         Αρχικό παράθυρο συλογής πληροφοριών
 
         Πεδία
         ----------
-
-        Μέθοδοι
-        ----------
-        create_widgets()
-        δημιουργεί τα στοιχεία του παραθύρου:
         player1_label : ttk.Label
         player1_entry : ttk.Entry
         cd1 : tk.IntVar
@@ -439,6 +584,12 @@ class App(tk.Tk):
         intell_choise1 : ttk.Combobox
         intell_choise2 : ttk.Combobox
         submit_button : ttk.Button
+
+        Μέθοδοι
+        ----------
+        create_widgets()
+        δημιουργεί τα στοιχεία του παραθύρου:
+
 
         button_push()
         συμβάν κατά το πάτημα του submit_button
@@ -509,6 +660,7 @@ class App(tk.Tk):
 
 
 class Game(tk.Tk):
+
     """
         Παράθυρο παιχνιδιού
         κατά την αρχικοποίηση ελέγχει αν παίζουν δύο υπολογιστές και αν ναι δημιουργεί ένα αντικείμενο
@@ -703,6 +855,7 @@ class Game(tk.Tk):
 
 
 class Winner(tk.Toplevel):
+
     """
             Toplevel Παράθυρο Νικητή ή Ισσοπαλίας
             κατά την σρχικοποίηση καλεί την grab_set() ώστε ο χρήστης να μην μπορεί να κάνει κίνηση στο
