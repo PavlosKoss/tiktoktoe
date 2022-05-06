@@ -254,14 +254,16 @@ class Table:
         return random.choice(self.toplay())
 
 
-class GameControler:
+class GameController:
     """
         Διαχειριστής παιχνιδιού
 
         Πεδία
         ----------
         player1 : Player()
+            Παίκτης Χ
         player2 : Player()
+            Παίκτης Ο
         tablo : Table()
         score_board : ScoreBoard()
         game : Game()
@@ -517,6 +519,7 @@ class GameControler:
         label: Game.label'n'
             το label στο οποίο έγινε η κίνηση
         game: Game()
+
         Επιστρέφει
         ----------
         None
@@ -543,7 +546,8 @@ class GameControler:
 
     def color_the_winning_line(self):
         """
-        βρήσκει ποιά είναι η νικηρήρια σειρά και χρωματίζει κόκκινο το κείμενο στα labels
+        Βρήσκει ποιά είναι η νικηρήρια σειρά και χρωματίζει κόκκινο το κείμενο στα labels
+
         Παράμετροι
         ----------
         None
@@ -566,6 +570,7 @@ class PlayTwoComputers(Thread):
     """
         Θυγατρική κλάση της Thread για την εκτέλεση κώδικα σε ξεχωριστό tread ωστε να ανανεώνεται
         το παράθυρο του παιχνιδιού όταν και οι δύο παίχτες είναι ο υπολογιστής.
+
         Πεδία
         ----------
 
@@ -585,6 +590,10 @@ class PlayTwoComputers(Thread):
         self.game = game
 
     def run(self):
+        """
+
+        :return:
+        """
         gc.click_for_computer()
 
 
@@ -592,6 +601,7 @@ class PlayTwoComputers(Thread):
 class App(tk.Tk):
     """
         Αρχικό παράθυρο συλογής πληροφοριών
+
         Πεδία
         ----------
         player1_label : ttk.Label
@@ -607,13 +617,14 @@ class App(tk.Tk):
         intell_choise1 : ttk.Combobox
         intell_choise2 : ttk.Combobox
         submit_button : ttk.Button
+
         Μέθοδοι
         ----------
         button_push()
-        συμβάν κατά το πάτημα του submit_button
-        δημιουργεί ένα global αντικείμενο GameControler και στη συμέχεια καλή την get_settings μέθοδο
-        αυτού όπου και τοποθετεί τα πεδία που συμπληρώσαμε. στη συνέχεια καταστρέφει τον εαυτό της
-        και καλεί την game_by_couple() του διαχειριστή του παιχνιδιού.
+            συμβάν κατά το πάτημα του submit_button
+            δημιουργεί ένα global αντικείμενο GameControler και στη συμέχεια καλή την get_settings μέθοδο
+            αυτού όπου και τοποθετεί τα πεδία που συμπληρώσαμε. στη συνέχεια καταστρέφει τον εαυτό της
+            και καλεί την game_by_couple() του διαχειριστή του παιχνιδιού.
     """
 
     def __init__(self):
@@ -665,7 +676,7 @@ class App(tk.Tk):
 
     def button_push(self):
         global gc
-        gc = GameControler()
+        gc = GameController()
         gc.get_settings(self.player1_entry.get(), self.player2_entry.get(), self.cd1.get(), self.cd2.get(),
                         self.selected_level1.get(), self.selected_level2.get())
         App.destroy(self)
@@ -830,6 +841,7 @@ class Winner(tk.Toplevel):
             Toplevel Παράθυρο Νικητή ή Ισσοπαλίας
             κατά την σρχικοποίηση καλεί την grab_set() ώστε ο χρήστης να μην μπορεί να κάνει κίνηση στο
             Game Window
+
             Πεδία
             ----------
             label_winner : tk.Label
@@ -841,17 +853,18 @@ class Winner(tk.Toplevel):
             label_score_p2 : tk.Label
             button_continue : tk.Label
             button_end : tk.Label
+
             Μέθοδοι
             ----------
             create_widgets()
-            δημιουργεί τα στοιχεία του παραθύρου
+                δημιουργεί τα στοιχεία του παραθύρου
             button_continue_push()
-            καλεί την new_game() από το αντικείμενο τύπου GameControler που δημιουργήσαμε
-            καλεί την grap_release() για να ελευθερώσει το Game Window
-            καταστέφει το Game Window
-            και καλεί την game_by_couple() από το αντικείμενο τύπου GameControler που δημιουργήσαμε
+                καλεί την new_game() από το αντικείμενο τύπου GameControler που δημιουργήσαμε
+                καλεί την grap_release() για να ελευθερώσει το Game Window
+                καταστέφει το Game Window
+                και καλεί την game_by_couple() από το αντικείμενο τύπου GameControler που δημιουργήσαμε
             button_end_push()
-            καταστρέφει το Game Window
+                καταστρέφει το Game Window
            """
 
     def __init__(self):
