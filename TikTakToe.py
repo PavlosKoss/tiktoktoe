@@ -33,10 +33,12 @@ class Player:
 class EasyComPlayer(Player):
     """
        Παίχτης - Υπολογιστής easy
+
        Πεδία
        ----------
        name : str
        Όνομα παίχτη
+
        Μέθοδοι
        ----------
        play(table, other_player)
@@ -55,10 +57,12 @@ class EasyComPlayer(Player):
 class NormalComPlayer(Player):
     """
        Παίχτης - Υπολογιστής Normal
+
        Πεδία
        ----------
        name : str
        Όνομα παίχτη
+
        Μέθοδοι
        ----------
        play(table)
@@ -88,10 +92,12 @@ class NormalComPlayer(Player):
 class HardComPlayer(Player):
     """
        Παίχτης - Υπολογιστής Good
+
        Πεδία
        ----------
        name : str
        Όνομα παίχτη
+
        Μέθοδοι
        ----------
        play(table)
@@ -111,6 +117,7 @@ class HardComPlayer(Player):
     def play(self, table):
 
         diag = ((1,5,9),(3,5,7))
+        gammas = ((1,2,3,6), (2,3,6,9), (3,6,9,8), (6,9,8,7), (9,8,7,4), (8,7,4,1), (7,4,1,2), (4,1,2,3))
         if table.ready_to_win(self) is not None:
             return table.ready_to_win(self)
         if table.ready_to_win(gc.other_player()) is not None:
@@ -122,6 +129,9 @@ class HardComPlayer(Player):
                 if all(j in table.played() for j in diagonios):
                     if 5 in table.tablo[self]:
                         return random.choice([2,4,6,8])
+            for gamma in gammas:
+                if len(set(gamma).intersection(table.tablo[gc.other_player()])) == 2:
+                    return random.choice(list(set(gamma).difference(table.tablo[gc.other_player()])))
         if table.place_in_center() is not None:
             return 5
         if table.place_in_corner() is not None:
@@ -135,12 +145,14 @@ class ScoreBoard:
     """
         Πίνακας Σκορ
         κρατάει το σκορ των νικών των παιχτών και αυξάνει το σκορ του νικητή
+
         Πεδία
         ----------
         player1 : Player()
         player2 : Player()
         board : dict
             Λεξικό με κλειδί τον παίχτη και δεδομένα το σκορ
+
         Μέθοδοι
         ----------
         winner(player)
@@ -159,6 +171,7 @@ class ScoreBoard:
 class Table:
     """
             κρατά και διαχειρίζετε τον πίνακα των θέσεων που έχουν παιχτεί ανα παίκτη.
+
             Πεδία
             ----------
             player1 : Player()
@@ -167,6 +180,7 @@ class Table:
                 Λεξικό με κλειδί τον παίχτη και δεδομένα τις θέσεις που έχει παίξει
             winning_series : list
                 Πίνακας με τους νικητήριους συνδιασμούς θέσεων
+
             Μέθοδοι
             ----------
             place_move(player, number)
@@ -242,6 +256,7 @@ class Table:
 class GameControler:
     """
         Διαχειριστής παιχνιδιού
+
         Πεδία
         ----------
         player1 : Player()
@@ -255,6 +270,7 @@ class GameControler:
             Μετριτής παρτίδων
         couples : int
             1 για human - human, 2 for human - computer, 3 for computer - computer
+
         Μέθοδοι
         ----------
         get_settings(player1_entry, player2_entry, cd1, cd2, selected_level)
@@ -290,6 +306,7 @@ class GameControler:
     def __init__(self):
         """
         Αρχικοποιεί τα πεδία της GameControler
+
         Παράμετροι
         ----------
         player1 : Player
@@ -323,6 +340,7 @@ class GameControler:
         """
         Ελέγχει το είδος των παιχτών και δημιουργεί τα αντικείμενα Player1 & Player2
         Δημιουργεί τα αντικείμενα tablo & score_board
+
         Παράμετροι
         __________
         player1_entry: str
@@ -331,6 +349,7 @@ class GameControler:
         cd2: int (0 or 1)
         selected_level1: str
         selected_level2: str
+
         Επιστρέφει
         __________
         None
@@ -359,9 +378,11 @@ class GameControler:
         """
         Ελέγχει το ζευγάρι των παιχτών και ορίζει την couples.
         Έπειτα δημιουργεί ένα αντικείμενο Game() και το εκτελεί
+
         Παράμετροι
         __________
         None
+
         Επιστρέφει
         __________
         None
@@ -378,9 +399,11 @@ class GameControler:
     def current_player(self):
         """
         ελέγχει τον counter και αν  είναι ζηγός ο παίχτης είναι ο player1 αλλιώς ο player2
+
         Παράμετροι
         __________
         None
+
         Επιστρέφει
         __________
         player1 or player2
@@ -394,9 +417,11 @@ class GameControler:
     def other_player(self):
         """
         επιστρέφει τον παίχτη που δεν παίζει αυτή τη στιγμή
+
         Παράμετροι
         __________
         None
+
         Επιστρέφει
         __________
         player1 or player2
@@ -410,9 +435,11 @@ class GameControler:
         """
         αλλάζει τους counters και αδειάζει το tablo αν ο game_count δεν διαιρήτε με το μηδέν
         δίνει στον count την 1 για να παίξει πρότος ο δευτερος παίχτης
+
         Παράμετροι
         __________
         None
+
         Επιστρέφει
         __________
         None
@@ -425,9 +452,11 @@ class GameControler:
     def check_for_winner(self):
         """
         ελέγχει αν ο παίχτης που παίζει τώρα έχει συμπληρώσει κάποια νικητήρια στήλη
+
         Παράμετροι
         __________
         None
+
         Επιστρέφει
         __________
         True or False
@@ -441,9 +470,11 @@ class GameControler:
     def check_for_draw(self):
         """
         ελέγχει αν έχουν παιχτεί όλες οι θέσεις
+
         Παράμετροι
         __________
         None
+
         Επιστρέφει
         __________
         True or False
@@ -475,7 +506,9 @@ class GameControler:
         δίνει το αντίστοιχο text στο label (Χ ή Ο)
         Ελέγχει αν υπάρχει νικητής ή ισσοπαλία και αν ναι καλεί την open_winner μέθοδο του Game αντικειμένου
         αν όχι αυξάνει τον count αλλάζει το όνομα του παίχτη στο label_now_plays ώστε να δείχνει τον παίχτη που
-        έχει σειρά να παίξει και καλεί την μέθοδο click_for_computer
+        έχει σειρά να παίξει και καλεί την μέθοδο click_for_computer η οποία αν ο επόμενος παίχτης είναι human περιμένει
+        να πατήσει κάποιο label ο χρήστης
+
         Παράμετροι
         ----------
         number: int (1 to 9)
@@ -676,10 +709,7 @@ class Game(tk.Tk):
         open_winner()
             καλεί το TopLevel Winner
         label1_click(event)
-            καλεί την check την εκτελεί με παράμετρο τον αριθμό του κελιού και αν επιστρέψει "destroy" καλεί
-            την open_winner() με καθυστέρηση αλλιώς καλεί την click_for_computer η οποία αν είναι
-            ο παίκτης human δεν κάνει τίποτα και περιμένει από τον
-            παίκτη να κάνει κάποια κίνηση.
+            καλεί την check την εκτελεί με παράμετρο τον αριθμό του κελιού και το label
         το ίδιο για κάθε labelx_click()
        """
 
@@ -731,12 +761,6 @@ class Game(tk.Tk):
         self.label9.place(x=160, y=146)
         if gc.couples != 3:
             self.label9.bind("<Button-1>", self.label9_click)
-        for i in range(1,10):
-            if i in gc.tablo.tablo[gc.player1]:
-                eval(f"self.label{i}.config(text='X')")
-            elif i in gc.tablo.tablo[gc.player2]:
-                eval(f"self.label{i}.config(text='O')")
-            else : eval(f"self.label{i}.config(text='')")
         self.label_now_plays = tk.Label(self, text="   ", font=("Arial", 12), width=25)
         self.label_now_plays.config(text="Now Plays: {}".format(gc.current_player().name))
         self.label_now_plays.grid(column=0, columnspan=2, row=1, padx=(0, 0), sticky=tk.S)
@@ -758,12 +782,12 @@ class Game(tk.Tk):
                                             font=("Arial", 15), width=11)
         self.score_board_p2score.grid(column=1, row=8)
 
-        # αν οι αντίπαλοι είναι δύο υπολογιστές διμιουργέι ένα Thread αντικείμενο (play)
+        # αν οι αντίπαλοι είναι δύο υπολογιστές δημιουργέι ένα Thread αντικείμενο (autoplay)
         # και καλεί την start του αντικειμένου ώστε να εκτελεστουν οι κινήσεις χωρίς να διακοπεί η
         # επανάλειψη του παραθύρου και να μπορούμε να της βλέπουμε στην οθόνη.
         if gc.couples == 3:
-            play = PlayTwoComputers(self)
-            play.start()
+            autoplay = PlayTwoComputers(self)
+            autoplay.start()
         # διαφορετικά αν ο παίκτης που παίζει είναι υπολογιστής καλεί την μέθοδο play του παίχτη και
         # καλεί την bind του αντίστοιχου label.
         elif gc.current_player().play(gc.tablo) != 0:
