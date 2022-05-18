@@ -780,7 +780,7 @@ class App(tk.Tk):
 
     def __init__(self):
         super().__init__()
-        # self.geometry("450x150")
+        #self.geometry("450x150")
         self.title('Tik Tok Toe')
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=6)
@@ -816,10 +816,10 @@ class App(tk.Tk):
         level = ('Easy', 'Normal', 'Hard')
         self.intell_choise1 = ttk.Combobox(self, textvariable=self.selected_level1, values=level, state='readonly')
         self.intell_choise1.current(0)
-        self.intell_choise1.grid(column=3, row=0, sticky=tk.W, padx=(0,5))
+        self.intell_choise1.grid(column=3, row=0, sticky=tk.W)
         self.intell_choise2 = ttk.Combobox(self, textvariable=self.selected_level2, values=level, state='readonly')
         self.intell_choise2.current(0)
-        self.intell_choise2.grid(column=3, row=1, sticky=tk.W, padx=(0,5))
+        self.intell_choise2.grid(column=3, row=1, sticky=tk.W)
 
         # Submit Button
         submit_button = ttk.Button(self, command=self.button_push, text="Submit")
@@ -902,68 +902,73 @@ class Game(tk.Tk):
         self.title('TikTakToe')
         self.resizable(False, False)
 
-        self.camvas = tk.Canvas(self, width=250, height=215, bg="white")
+        self.camvas = tk.Canvas(self, width=250, height=215)
         self.camvas.create_line(90, 0, 90, 215, width=4, fill="grey")
         self.camvas.create_line(165, 0, 165, 215, width=4, fill="grey")
         self.camvas.create_line(20, 72, 230, 72, width=4, fill="grey")
         self.camvas.create_line(20, 142, 230, 142, width=4, fill="grey")
-        self.camvas.grid(column=0, columnspan=2, row=0)
-        self.label1 = tk.Label(self.camvas, font=("Arial", 40), bg="white")
+        self.camvas.grid(column=0, columnspan=2, row=0, pady=(10,20))
+        self.label1 = tk.Label(self.camvas, text="", font=("Arial", 40), width=2)
         self.label1.place(x=20, y=2, width=65, height=65)
         if gc.couples != 3:
             self.label1.bind("<Button-1>", self.label1_click)
-        self.label2 = tk.Label(self.camvas, font=("Arial", 40), bg="white")
+        self.label2 = tk.Label(self.camvas, font=("Arial", 40), width=2)
         self.label2.place(x=95, y=2, width=65, height=65)
         if gc.couples != 3:
             self.label2.bind("<Button-1>", self.label2_click)
-        self.label3 = tk.Label(self.camvas, font=("Arial", 40), bg="white")
+        self.label3 = tk.Label(self.camvas, font=("Arial", 40), width=2)
         self.label3.place(x=170, y=2, width=65, height=65)
         if gc.couples != 3:
             self.label3.bind("<Button-1>", self.label3_click)
-        self.label4 = tk.Label(self.camvas, font=("Arial", 40), bg="white")
+        self.label4 = tk.Label(self.camvas, font=("Arial", 40), width=2)
         self.label4.place(x=20, y=74, width=65, height=65)
         if gc.couples != 3:
             self.label4.bind("<Button-1>", self.label4_click)
-        self.label5 = tk.Label(self.camvas, font=("Arial", 40), bg="white")
+        self.label5 = tk.Label(self.camvas, font=("Arial", 40), width=2)
         self.label5.place(x=95, y=74, width=65, height=65)
         if gc.couples != 3:
             self.label5.bind("<Button-1>", self.label5_click)
-        self.label6 = tk.Label(self.camvas, font=("Arial", 40), bg="white")
+        self.label6 = tk.Label(self.camvas, font=("Arial", 40), width=2)
         self.label6.place(x=170, y=74, width=65, height=65)
         if gc.couples != 3:
             self.label6.bind("<Button-1>", self.label6_click)
-        self.label7 = tk.Label(self.camvas, font=("Arial", 40), bg="white")
+        self.label7 = tk.Label(self.camvas, font=("Arial", 40), width=2)
         self.label7.place(x=20, y=146, width=65, height=65)
         if gc.couples != 3:
             self.label7.bind("<Button-1>", self.label7_click)
-        self.label8 = tk.Label(self.camvas, font=("Arial", 40), bg="white")
+        self.label8 = tk.Label(self.camvas, font=("Arial", 40), width=2)
         self.label8.place(x=95, y=146, width=65, height=65)
         if gc.couples != 3:
             self.label8.bind("<Button-1>", self.label8_click)
-        self.label9 = tk.Label(self.camvas, font=("Arial", 40), bg="white")
+        self.label9 = tk.Label(self.camvas, font=("Arial", 40), width=2)
         self.label9.place(x=170, y=146, width=65, height=65)
         if gc.couples != 3:
             self.label9.bind("<Button-1>", self.label9_click)
-        self.label_now_plays = tk.Label(self, font=("Arial", 12), width=30)
+        self.label_now_plays = tk.Label(self, font=("Arial", 15), width=30)
         self.label_now_plays.config(text="Now Plays: {}".format(gc.current_player().name))
         self.label_now_plays.grid(column=0, columnspan=2, row=1, padx=(0, 0), sticky=tk.N)
         self.score_board_label = tk.Label(self, anchor="center", text="Πίνακας Score",
                                           font=("Arial", 15), width=15)
         self.score_board_label.grid(column=0, columnspan=2, row=6, sticky=tk.NSEW, padx=(0, 0), pady=(10, 0))
-        self.score_board_p1 = tk.Label(self, borderwidth=2, relief="groove", text=f"{gc.player1.name}",
-                                       font=("Arial", 12), width=20)
-        self.score_board_p1.grid(column=0, row=7, padx=(0, 0))
-        self.score_board_p2 = tk.Label(self, borderwidth=2, relief="groove", text=f"{gc.player2.name}",
-                                       font=("Arial", 12), width=20)
-        self.score_board_p2.grid(column=1, row=7, padx=(0, 0))
+
+        self.label_x = tk.Label(self, borderwidth=2, text="X", font=("Arial", 20), width=1)
+        self.label_x.grid(column=0, row=7, padx=(0, 0))
+        self.label_y = tk.Label(self, borderwidth=2, text="Y", font=("Arial", 20), width=1)
+        self.label_y.grid(column=1, row=7, padx=(0, 0))
+        self.score_board_p1 = tk.Label(self, borderwidth=2, text=f"{gc.player1.name}",
+                                       font=("Arial", 14), width=20)
+        self.score_board_p1.grid(column=0, row=8, padx=(0, 0))
+        self.score_board_p2 = tk.Label(self, borderwidth=2, text=f"{gc.player2.name}",
+                                       font=("Arial", 14), width=20)
+        self.score_board_p2.grid(column=1, row=8, padx=(0, 0))
         self.score_board_p1score = tk.Label(self, borderwidth=2, relief="groove",
                                             text=f"{gc.score_board.board[gc.player1]}",
-                                            font=("Arial", 15), width=8)
-        self.score_board_p1score.grid(column=0, row=8, pady=(2,10))
+                                            font=("Arial", 17), width=8)
+        self.score_board_p1score.grid(column=0, row=9, pady=(2, 30))
         self.score_board_p2score = tk.Label(self, borderwidth=2, relief="groove",
                                             text=f"{gc.score_board.board[gc.player2]}",
-                                            font=("Arial", 15), width=8)
-        self.score_board_p2score.grid(column=1, row=8, pady=(2,10))
+                                            font=("Arial", 17), width=8)
+        self.score_board_p2score.grid(column=1, row=9, pady=(2, 30))
 
         # αν οι αντίπαλοι είναι δύο υπολογιστές δημιουργεί ένα Thread αντικείμενο (autoplay)
         # και καλεί τη start του αντικειμένου ώστε να εκτελεστούν οι κινήσεις χωρίς να διακοπεί η
@@ -1049,7 +1054,7 @@ class Winner(tk.Toplevel):
 
     def __init__(self):
         super().__init__()
-        self.geometry("+250+250")
+        self.geometry("+400+350")
         self.title('TikTakToe')
         self.grab_set()
         self.resizable(False, False)
@@ -1057,22 +1062,22 @@ class Winner(tk.Toplevel):
         # και το όνομα του νικητή αν υπάρχει
         if gc.check_for_winner():
             self.label_winner = tk.Label(self, text="The winner is:",
-                                         font=("Arial", 12))
+                                         font=("Arial", 15))
             self.label_winner.grid(column=0, row=0)
-            self.label_winner_name = tk.Label(self, text=f"{gc.current_player().name}", font=("Arial", 14), width=24)
+            self.label_winner_name = tk.Label(self, text=f"{gc.current_player().name}", font=("Arial", 19), width=24)
             self.label_winner_name.grid(column=0, columnspan=2, row=1)
         else:
-            self.label_winner = tk.Label(self, text="The Game is DRAW", font=("Arial", 12), width=30)
+            self.label_winner = tk.Label(self, text="The Game is DRAW", font=("Arial", 15), width=30)
         self.label_winner.grid(column=0, columnspan=2, row=0)
-        self.label_score = tk.Label(self, text="The Score is", font=("Arial", 12), width=12)
+        self.label_score = tk.Label(self, text="The Score is", font=("Arial", 15), width=12)
         self.label_score.grid(column=0, columnspan=2, row=2, pady=(5, 0))
-        self.label_p1 = tk.Label(self, text=f"{gc.player1.name}", font=("Arial", 9), width=24)
+        self.label_p1 = tk.Label(self, text=f"{gc.player1.name}", font=("Arial", 15), width=24)
         self.label_p1.grid(column=0, row=3)
-        self.label_p2 = tk.Label(self, text=f"{gc.player2.name}", font=("Arial", 9), width=24)
+        self.label_p2 = tk.Label(self, text=f"{gc.player2.name}", font=("Arial", 15), width=24)
         self.label_p2.grid(column=1, row=3)
-        self.label_score_p1 = tk.Label(self, text=f"{gc.score_board.board[gc.player1]}", font=("Arial", 15), width=12)
+        self.label_score_p1 = tk.Label(self, text=f"{gc.score_board.board[gc.player1]}", font=("Arial", 20), width=3)
         self.label_score_p1.grid(column=0, row=4)
-        self.label_score_p2 = tk.Label(self, text=f"{gc.score_board.board[gc.player2]}", font=("Arial", 15), width=12)
+        self.label_score_p2 = tk.Label(self, text=f"{gc.score_board.board[gc.player2]}", font=("Arial", 20), width=3)
         self.label_score_p2.grid(column=1, row=4)
         self.button_continue = ttk.Button(self, command=self.button_continue_push, text="Continue")
         self.button_continue.grid(column=0, row=5, padx=1, pady=20)
