@@ -787,7 +787,7 @@ class App(tk.Tk):
         self.columnconfigure(2, weight=3)
         self.columnconfigure(3, weight=1)
         # player1
-        self.player1_label = ttk.Label(self, text="Player1 (X):")
+        self.player1_label = tk.Label(self, text="Player1 (X):")
         self.player1_label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
 
         self.player1_entry = ttk.Entry(self)
@@ -956,18 +956,18 @@ class Game(tk.Tk):
         self.label_y = tk.Label(self, borderwidth=2, text="Y", font=("Arial", 20), width=1)
         self.label_y.grid(column=1, row=7, padx=(0, 0))
         self.score_board_p1 = tk.Label(self, borderwidth=2, text=f"{gc.player1.name}",
-                                       font=("Arial", 14), width=20)
+                                       font=("Arial", 12), width=20)
         self.score_board_p1.grid(column=0, row=8, padx=(0, 0))
         self.score_board_p2 = tk.Label(self, borderwidth=2, text=f"{gc.player2.name}",
-                                       font=("Arial", 14), width=20)
+                                       font=("Arial", 12), width=20)
         self.score_board_p2.grid(column=1, row=8, padx=(0, 0))
         self.score_board_p1score = tk.Label(self, borderwidth=2, relief="groove",
                                             text=f"{gc.score_board.board[gc.player1]}",
-                                            font=("Arial", 17), width=8)
+                                            font=("Arial", 15), width=8)
         self.score_board_p1score.grid(column=0, row=9, pady=(2, 30))
         self.score_board_p2score = tk.Label(self, borderwidth=2, relief="groove",
                                             text=f"{gc.score_board.board[gc.player2]}",
-                                            font=("Arial", 17), width=8)
+                                            font=("Arial", 15), width=8)
         self.score_board_p2score.grid(column=1, row=9, pady=(2, 30))
 
         # αν οι αντίπαλοι είναι δύο υπολογιστές δημιουργεί ένα Thread αντικείμενο (autoplay)
@@ -1062,22 +1062,22 @@ class Winner(tk.Toplevel):
         # και το όνομα του νικητή αν υπάρχει
         if gc.check_for_winner():
             self.label_winner = tk.Label(self, text="The winner is:",
-                                         font=("Arial", 15))
+                                         font=("Arial", 13))
             self.label_winner.grid(column=0, row=0)
             self.label_winner_name = tk.Label(self, text=f"{gc.current_player().name}", font=("Arial", 19), width=24)
             self.label_winner_name.grid(column=0, columnspan=2, row=1)
         else:
             self.label_winner = tk.Label(self, text="The Game is DRAW", font=("Arial", 15), width=30)
         self.label_winner.grid(column=0, columnspan=2, row=0)
-        self.label_score = tk.Label(self, text="The Score is", font=("Arial", 15), width=12)
-        self.label_score.grid(column=0, columnspan=2, row=2, pady=(5, 0))
-        self.label_p1 = tk.Label(self, text=f"{gc.player1.name}", font=("Arial", 15), width=24)
+        self.label_score = tk.Label(self, text="Score", font=("Arial", 17), width=12)
+        self.label_score.grid(column=0, columnspan=2, row=2, pady=(20, 0))
+        self.label_p1 = tk.Label(self, text=f"{gc.player1.name}", font=("Arial", 13), width=24)
         self.label_p1.grid(column=0, row=3)
-        self.label_p2 = tk.Label(self, text=f"{gc.player2.name}", font=("Arial", 15), width=24)
+        self.label_p2 = tk.Label(self, text=f"{gc.player2.name}", font=("Arial", 13), width=24)
         self.label_p2.grid(column=1, row=3)
-        self.label_score_p1 = tk.Label(self, text=f"{gc.score_board.board[gc.player1]}", font=("Arial", 20), width=3)
+        self.label_score_p1 = tk.Label(self, text=f"{gc.score_board.board[gc.player1]}", font=("Arial", 17), width=3)
         self.label_score_p1.grid(column=0, row=4)
-        self.label_score_p2 = tk.Label(self, text=f"{gc.score_board.board[gc.player2]}", font=("Arial", 20), width=3)
+        self.label_score_p2 = tk.Label(self, text=f"{gc.score_board.board[gc.player2]}", font=("Arial", 17), width=3)
         self.label_score_p2.grid(column=1, row=4)
         self.button_continue = ttk.Button(self, command=self.button_continue_push, text="Continue")
         self.button_continue.grid(column=0, row=5, padx=1, pady=20)
