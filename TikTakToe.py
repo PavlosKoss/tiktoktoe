@@ -508,20 +508,20 @@ class GameController:
             self.player1 = Player(player1_entry)
         else:
             if selected_level1 == "Easy":
-                self.player1 = EasyComPlayer(player1_entry + "(ECom1)")
+                self.player1 = EasyComPlayer(player1_entry + "(ECom)")
             elif selected_level1 == "Normal":
-                self.player1 = NormalComPlayer(player1_entry + "(NCom1)")
+                self.player1 = NormalComPlayer(player1_entry + "(NCom)")
             else:
-                self.player1 = HardComPlayer(player1_entry + "(HCom1)")
+                self.player1 = HardComPlayer(player1_entry + "(HCom)")
         if cd2 == 0:
             self.player2 = Player(player2_entry)
         else:
             if selected_level2 == "Easy":
-                self.player2 = EasyComPlayer(player2_entry + "(ECom2)")
+                self.player2 = EasyComPlayer(player2_entry + "(ECom)")
             elif selected_level2 == "Normal":
-                self.player2 = NormalComPlayer(player2_entry + "(NCom2)")
+                self.player2 = NormalComPlayer(player2_entry + "(NCom)")
             else:
-                self.player2 = HardComPlayer(player2_entry + "(HCom2)")
+                self.player2 = HardComPlayer(player2_entry + "(HCom)")
         self.tablo = Table(self.player1, self.player2)
         self.score_board = ScoreBoard(self.player1, self.player2)
 
@@ -780,7 +780,7 @@ class App(tk.Tk):
 
     def __init__(self):
         super().__init__()
-        #self.geometry("450x150")
+        self.geometry("+50+50")
         self.title('Tik Tok Toe')
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=6)
@@ -816,10 +816,10 @@ class App(tk.Tk):
         level = ('Easy', 'Normal', 'Hard')
         self.intell_choise1 = ttk.Combobox(self, textvariable=self.selected_level1, values=level, state='readonly')
         self.intell_choise1.current(0)
-        self.intell_choise1.grid(column=3, row=0, sticky=tk.W)
+        self.intell_choise1.grid(column=3, row=0, sticky=tk.W, padx=(0, 10))
         self.intell_choise2 = ttk.Combobox(self, textvariable=self.selected_level2, values=level, state='readonly')
         self.intell_choise2.current(0)
-        self.intell_choise2.grid(column=3, row=1, sticky=tk.W)
+        self.intell_choise2.grid(column=3, row=1, sticky=tk.W, padx=(0, 10))
 
         # Submit Button
         submit_button = ttk.Button(self, command=self.button_push, text="Submit")
@@ -947,26 +947,23 @@ class Game(tk.Tk):
         self.label_now_plays = tk.Label(self, font=("Arial", 15), width=30)
         self.label_now_plays.config(text="Now Plays: {}".format(gc.current_player().name))
         self.label_now_plays.grid(column=0, columnspan=2, row=1, padx=(0, 0), sticky=tk.N)
-        self.score_board_label = tk.Label(self, anchor="center", text="Πίνακας Score",
+        self.score_board_label = tk.Label(self, anchor="center", text="Score",
                                           font=("Arial", 15), width=15)
         self.score_board_label.grid(column=0, columnspan=2, row=6, sticky=tk.NSEW, padx=(0, 0), pady=(10, 0))
 
         self.label_x = tk.Label(self, borderwidth=2, text="X", font=("Arial", 20), width=1)
         self.label_x.grid(column=0, row=7, padx=(0, 0))
-        self.label_y = tk.Label(self, borderwidth=2, text="Y", font=("Arial", 20), width=1)
+        self.label_y = tk.Label(self, borderwidth=2, text="O", font=("Arial", 20), width=1)
         self.label_y.grid(column=1, row=7, padx=(0, 0))
         self.score_board_p1 = tk.Label(self, borderwidth=2, text=f"{gc.player1.name}",
                                        font=("Arial", 12), width=20)
         self.score_board_p1.grid(column=0, row=8, padx=(0, 0))
-        self.score_board_p2 = tk.Label(self, borderwidth=2, text=f"{gc.player2.name}",
-                                       font=("Arial", 12), width=20)
+        self.score_board_p2 = tk.Label(self, text=f"{gc.player2.name}", font=("Arial", 12), width=20)
         self.score_board_p2.grid(column=1, row=8, padx=(0, 0))
-        self.score_board_p1score = tk.Label(self, borderwidth=2, relief="groove",
-                                            text=f"{gc.score_board.board[gc.player1]}",
+        self.score_board_p1score = tk.Label(self, text=f"{gc.score_board.board[gc.player1]}",
                                             font=("Arial", 15), width=8)
         self.score_board_p1score.grid(column=0, row=9, pady=(2, 30))
-        self.score_board_p2score = tk.Label(self, borderwidth=2, relief="groove",
-                                            text=f"{gc.score_board.board[gc.player2]}",
+        self.score_board_p2score = tk.Label(self, text=f"{gc.score_board.board[gc.player2]}",
                                             font=("Arial", 15), width=8)
         self.score_board_p2score.grid(column=1, row=9, pady=(2, 30))
 
@@ -1083,6 +1080,9 @@ class Winner(tk.Toplevel):
         self.button_continue.grid(column=0, row=5, padx=1, pady=20)
         self.button_end = ttk.Button(self, command=self.button_end_push, text="End")
         self.button_end.grid(column=1, row=5, padx=1, pady=20)
+        # αν κλείσει ο χρήστης το παράθυρο από το x να κλείσει και το Game παράθυρο για να
+        # μην κάνει έξτρα κινήσεις
+        self.protocol("WM_DELETE_WINDOW", self.button_end_push)
 
     def button_continue_push(self):
         gc.new_game()
@@ -1092,6 +1092,7 @@ class Winner(tk.Toplevel):
 
     def button_end_push(self):
         gc.game.destroy()
+
 
 
 if __name__ == "__main__":
