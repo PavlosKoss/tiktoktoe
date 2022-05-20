@@ -645,11 +645,10 @@ class GameController:
         if not self.check_for_winner() or not self.check_for_draw():
             if self.couples == 3:
                 time.sleep(1)
-            try:
-                eval('self.game.label{}_click("<Button-1>")'.format(
-                    self.current_player().play(self.tablo)))
-            except:
-                pass
+            play_no = self.current_player().play(self.tablo)
+            if play_no != 0:
+                eval('self.game.label{}_click("<Button-1>")'.format(play_no))
+
 
     def check(self, number, label, game):
         """
@@ -909,7 +908,7 @@ class Game(tk.Tk):
         self.camvas.create_line(165, 0, 165, 215, width=4, fill="grey")
         self.camvas.create_line(20, 72, 230, 72, width=4, fill="grey")
         self.camvas.create_line(20, 142, 230, 142, width=4, fill="grey")
-        self.camvas.grid(column=0, columnspan=2, row=0, pady=(10,20))
+        self.camvas.grid(column=0, columnspan=2, row=0, pady=(10, 20))
         self.label1 = tk.Label(self.camvas, text="", font=("Arial", 40), width=2)
         self.label1.place(x=20, y=2, width=65, height=65)
         if gc.couples != 3:
@@ -1094,7 +1093,6 @@ class Winner(tk.Toplevel):
 
     def button_end_push(self):
         gc.game.destroy()
-
 
 
 if __name__ == "__main__":
