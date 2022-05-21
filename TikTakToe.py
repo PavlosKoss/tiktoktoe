@@ -645,18 +645,19 @@ class GameController:
         if not self.check_for_winner() or not self.check_for_draw():
             if self.couples == 3:
                 time.sleep(1)
-            try:
-                eval('self.game.label{}_click("<Button-1>")'.format(
-                    self.current_player().play(self.tablo)))
-            except:
-                pass
+            play_no = self.current_player().play(self.tablo)
+            if play_no != 0:
+                eval('self.game.label{}_click("<Button-1>")'.format(play_no))
+
 
     def check(self, number, label, game):
         """
         ελέγχει αν το επιλεγμένο κελί έχει παιχτεί οπότε και εμφανίζει μήνυμα.
         αν όχι ελέγχει ποιός παίχτης έπαιξε καλεί την tablo.place_move για να τοποθετήσει την κίνηση στο tablo,
         δίνει το αντίστοιχο text στο label (Χ ή Ο)
-        Ελέγχει αν υπάρχει νικητής ή ισοπαλία και αν ναι καλεί την open_winner μέθοδο του Game αντικειμένου
+        Ελέγχει αν υπάρχει νικητής ή ισοπαλία και αν ναι:
+            Σε περίπτωση νίκης καταχωρεί τη νίκη στον πινακα του σκορ και χρωματίζει την νικητήρια στήλη.
+            Στη συνέχεια καλεί την open_winner μέθοδο του Game αντικειμένου
         αν όχι αυξάνει τον count αλλάζει το όνομα του παίχτη στο label_now_plays ώστε να δείχνει τον παίχτη που
         έχει σειρά να παίξει και καλεί τη μέθοδο click_for_computer η οποία αν ο επόμενος παίχτης είναι human περιμένει
         να πατήσει κάποιο label ο χρήστης
@@ -907,7 +908,7 @@ class Game(tk.Tk):
         self.camvas.create_line(165, 0, 165, 215, width=4, fill="grey")
         self.camvas.create_line(20, 72, 230, 72, width=4, fill="grey")
         self.camvas.create_line(20, 142, 230, 142, width=4, fill="grey")
-        self.camvas.grid(column=0, columnspan=2, row=0, pady=(10,20))
+        self.camvas.grid(column=0, columnspan=2, row=0, pady=(10, 20))
         self.label1 = tk.Label(self.camvas, text="", font=("Arial", 40), width=2)
         self.label1.place(x=20, y=2, width=65, height=65)
         if gc.couples != 3:
@@ -1101,7 +1102,6 @@ class Winner(tk.Toplevel):
 
     def button_end_push(self):
         gc.game.destroy()
-
 
 
 if __name__ == "__main__":
