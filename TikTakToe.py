@@ -19,12 +19,13 @@ class Player:
     ----------
     play()
         επιστρέφει 0
+
     """
 
     def __init__(self, name):
         self.name = name
 
-    def play(self, table):
+    def play(self, table, other_player):
         return 0
 
 
@@ -41,12 +42,12 @@ class EasyComPlayer(Player):
         ----------
         play(table, other_player)
             Που θα παίξει ο παίκτης
-       """
+    """
 
     def __init__(self, name):
         super().__init__(name)
 
-    def play(self, table):
+    def play(self, table , other_player):
         """
         Επιστρέφει μια τυχαία θέση που δεν έχει παιχτεί.
 
@@ -81,17 +82,19 @@ class NormalComPlayer(Player):
     def __init__(self, name):
         super().__init__(name)
 
-    def play(self, table):
+    def play(self, table, other_player):
         """
         Ελέγχει αν ο παίχτης μπορεί να νικήσει με μια κίνηση και επιστρέφει τη θέση
         Ελέγχει αν ο αντίπαλος μπορεί να νικήσει με μια κίνηση και επιστρέφει τη θέση
         Αν η κεντρική θέση είναι ελεύθερη την επιστρέφει
         Ελέγχει αν υπάρχει γωνιακή θέση και επιστρέφει μια τυχαία γωνιακή θέση
         Αν δεν ισχύει τίποτα απο τα παραπάνω επιστρέφει μια τυχαία θέση
+
         Παράμετροι
         ----------
         table: Table()
              Το αντικείμενο που διαχειρίζεται το ταμπλό
+
         Επιστρέφει
         ---------
         int:int
@@ -100,8 +103,8 @@ class NormalComPlayer(Player):
 
         if table.ready_to_win(self) is not None:
             return table.ready_to_win(self)
-        if table.ready_to_win(gc.other_player()) is not None:
-            return table.ready_to_win(gc.other_player())
+        if table.ready_to_win(other_player) is not None:
+            return table.ready_to_win(other_player)
         if table.place_in_center() is not None:
             return 5
         if table.place_in_corner() is not None:
@@ -128,12 +131,12 @@ class HardComPlayer(Player):
     def __init__(self, name):
         super().__init__(name)
 
-    def play(self, table):
+    def play(self, table, other_player):
         """
         Ελέγχει αν ο παίχτης μπορεί να νικήσει με μια κίνηση και επιστρέφει τη θέση
         Ελέγχει αν ο αντίπαλος μπορεί να νικήσει με μια κίνηση και επιστρέφει τη θέση
         Ελέγχει αν παίζει πρώτος και αν ναι επιστρέφει μια τυχαία γωνία
-        Αν έχουν παιχτεί οι τρείς θέσεις σε μια διαγώνιο ελέγχει αν η θέση 5 είναι
+        Αν έχουν παιχτεί οι τρεις θέσεις σε μια διαγώνιο ελέγχει αν η θέση 5 είναι
         καταλυμένη από τον εαυτό του και αν ναι επιστρέφει μια μεσαία θέση
         Αν ο αντίπαλος στην τρίτη κίνηση έχει δυο θέσεις στα gammas τότε παίζει μια θέση από τις υπόλοιπες
         Αν η κεντρική θέση είναι ελεύθερη την επιστρέφει
@@ -155,8 +158,8 @@ class HardComPlayer(Player):
             (4, 1, 2, 3))
         if table.ready_to_win(self) is not None:
             return table.ready_to_win(self)
-        if table.ready_to_win(gc.other_player()) is not None:
-            return table.ready_to_win(gc.other_player())
+        if table.ready_to_win(other_player) is not None:
+            return table.ready_to_win(other_player)
         if len(table.played()) == 0:
             return random.choice([1, 3, 7, 9])
         if len(table.played()) == 3:
@@ -165,8 +168,8 @@ class HardComPlayer(Player):
                     if 5 in table.tablo[self]:
                         return random.choice([2, 4, 6, 8])
             for gamma in gammas:
-                if len(set(gamma).intersection(table.tablo[gc.other_player()])) == 2:
-                    return random.choice(list(set(gamma).difference(table.tablo[gc.other_player()])))
+                if len(set(gamma).intersection(table.tablo[other_player])) == 2:
+                    return random.choice(list(set(gamma).difference(table.tablo[other_player])))
         if table.place_in_center() is not None:
             return 5
         if table.place_in_corner() is not None:
@@ -258,7 +261,7 @@ class Table:
 
     def place_move(self, player, number):
         """
-        τοποθετεί την κίνηση του παίκτη στο tablo
+        Τοποθετεί την κίνηση του παίκτη στο tablo
 
         Παράμετροι
         ----------
@@ -275,7 +278,7 @@ class Table:
 
     def played(self):
         """
-        επιστρέφει μια λίστα με της θέσεις που έχουν παιχτεί
+        Επιστρέφει μια λίστα με της θέσεις που έχουν παιχτεί
 
         Παράμετροι
         ----------
@@ -312,7 +315,7 @@ class Table:
 
     def ready_to_win(self, player):
         """
-        ελέγχει αν ο διθέντας παίκτης έχει κάποια κίνηση για να νικήσει
+        Ελέγχει αν ο δοθέντας παίκτης έχει κάποια κίνηση για να νικήσει
 
         Παράμετροι
         ----------
@@ -323,7 +326,7 @@ class Table:
         None
             αν δεν υπάρχει κάποια κίνηση νίκης
         number1 : int
-            την θέση που πρέπει να παίξει ο παίκτης για να νικήσει
+            τη θέση που πρέπει να παίξει ο παίκτης για να νικήσει
         """
         for winning_no in self.winning_series:
             count = 0
@@ -341,7 +344,7 @@ class Table:
 
     def place_in_center(self):
         """
-        ελέγχει αν η μεσαία θέση είναι ελεύθερη και την επιστρέφει αν ναι, αλλιως επιστρέφει None
+        Ελέγχει αν η μεσαία θέση είναι ελεύθερη και την επιστρέφει αν ναι, αλλιώς επιστρέφει None
 
         Παράμετροι
         ----------
@@ -425,25 +428,21 @@ class GameController:
         Ελέγχει το ζευγάρι των παιχτών και ορίζει την couples.
         Έπειτα δημιουργεί ένα αντικείμενο Game() και το εκτελεί
     current_player()
-        ελέγχει τον counter και αν  είναι ζηγός ο παίχτης είναι ο player1 αλλιώς ο player2
+        ελέγχει τον counter και αν  είναι ζυγός ο παίχτης είναι ο player1 αλλιώς ο player2
     other_player()
         επιστρέφει τον παίχτη που δεν παίζει αυτή τη στιγμή
     new_game()
-        αλλάζει τους counters και αδειάζει το tablo αν ο game_count δεν διαιρήτε με το μηδέν
-        δίνει στον count την 1 για να παίξει πρότος ο δευτερος παίχτης
+        αλλάζει τους counters και αδειάζει το tablo αν ο game_count δεν διαιρείτε με το μηδέν
+        δίνει στον count την 1 για να παίξει πρώτος ο δεύτερος παίχτης
     check_for_winner()
         ελέγχει αν ο παίχτης που παίζει τώρα έχει συμπληρώσει κάποια νικητήρια στήλη και επιστρέφει
         True ή False
     check_for_draw()
         ελέγχει αν έχουν παιχτεί όλες οι θέσεις και αν ναι επιστρέφει True αλλιώς False
     click_for_computer()
-        προσπαθεί να παίξει για τον υπολογιστή αν ο παίχτης είναι human
-        επιστρέφει None οπότε αποτυγχάνει και δεν κάνει κάτι
+        Εκτελεί την κίνηση του παίκτη computer
     check(number, label)
-        ελέγχει αν το επιλεγμένο κελί έχει παιχτεί οπότε και εμφανίζει μήνυμα.
-        αν όχι ελέγχει ποιος παίχτης έπαιξε καλεί την tablo.place_move για να τοποθετήσει την κίνηση στο tablo,
-        δίνει το αντίστοιχο text στο label (Χ ή Ο) και αυξάνει τον count
-        τέλος ελέγχει αν υπάρχει νικητής ή ισοπαλία και αν ναι επιστρέφει destroy
+        Ελέγχει την εγκυρότητα της κίνησης και κάνει τις ανάλογες ενέργειες αν αυτή είναι έγκυρη
     color_the_winning_line()
         βρίσκει ποια είναι η νικητήρια σειρά και χρωματίζει κόκκινα τα γράμματα στα labels
     """
@@ -467,7 +466,7 @@ class GameController:
         game_count : int
             μεταβλητή που μετράει τον αριθμό των παιχνιδιών
         couples : int
-            μεταβλητή που χαρατηρίζει το ζευγάρι των παιχτών:
+            μεταβλητή που χαρακτηρίζει το ζευγάρι των παιχτών:
                 1 = human vs humman
                 2 = human vs computer
                 3 = computer vs computer
@@ -479,6 +478,8 @@ class GameController:
         self.count = 0
         self.game_count = 0
         self.couples = 0
+        app = App(self)
+        app.mainloop()
 
     def get_settings(self, player1_entry, player2_entry, cd1, cd2, selected_level1, selected_level2):
         """
@@ -527,8 +528,8 @@ class GameController:
 
     def game_by_couple(self):
         """
-        Ελέγχει το ζευγάρι των παιχτών και ορίζει την couples.
-        Έπειτα δημιουργεί ένα αντικείμενο Game() και καλεί την μέθοδο του mainloop
+        Ελέγχει το ζευγάρι των παιχτών και ορίζει τη couples.
+        Έπειτα δημιουργεί ένα αντικείμενο Game() και καλεί τη μέθοδο του mainloop
 
         Παράμετροι
         __________
@@ -544,12 +545,12 @@ class GameController:
             self.couples = 3
         else:
             self.couples = 2
-        self.game = Game()
+        self.game = Game(self)
         self.game.mainloop()
 
     def current_player(self):
         """
-        ελέγχει τον counter και αν  είναι ζηγός ο παίχτης είναι ο player1 αλλιώς ο player2
+        Ελέγχει τον counter και αν  είναι ζυγός ο παίχτης είναι ο player1 αλλιώς ο player2
 
         Παράμετροι
         __________
@@ -567,7 +568,7 @@ class GameController:
 
     def other_player(self):
         """
-        επιστρέφει τον παίχτη που δεν παίζει αυτή τη στιγμή
+        Επιστρέφει τον παίχτη που δεν παίζει αυτή τη στιγμή
 
         Παράμετροι
         __________
@@ -602,7 +603,7 @@ class GameController:
 
     def check_for_winner(self):
         """
-        ελέγχει αν ο παίχτης έχει συμπληρώσει κάποια νικητήρια στήλη
+        Ελέγχει αν ο παίχτης έχει συμπληρώσει κάποια νικητήρια στήλη
 
         Παράμετροι
         __________
@@ -638,26 +639,25 @@ class GameController:
 
     def click_for_computer(self):
         """
-        Προσπαθεί να παίξει για τον υπολογιστή αν ο παίχτης είναι human
-        επιστρέφει None οπότε αποτυγχάνει και δεν κάνει κάτι
+        Αν παίζουν 2 computer καθυστερεί για 1 δευτερόλεπτο ώστε να προλάβει ο χρήστης τις
+        κινήσεις στο ταμπλό
+        Ελέγχει άν ο παίκτης είναι human και αν όχι εκτελεί την κίνηση για τον computer παίκτη
         """
-
         if not self.check_for_winner() or not self.check_for_draw():
             if self.couples == 3:
                 time.sleep(1)
-            play_no = self.current_player().play(self.tablo)
+            play_no = self.current_player().play(self.tablo, self.other_player())
             if play_no != 0:
                 eval('self.game.label{}_click("<Button-1>")'.format(play_no))
 
-
     def check(self, number, label, game):
         """
-        ελέγχει αν το επιλεγμένο κελί έχει παιχτεί οπότε και εμφανίζει μήνυμα.
-        αν όχι ελέγχει ποιός παίχτης έπαιξε καλεί την tablo.place_move για να τοποθετήσει την κίνηση στο tablo,
+        Ελέγχει αν το επιλεγμένο κελί έχει παιχτεί οπότε και εμφανίζει μήνυμα.
+        Αν όχι ελέγχει ποιος παίχτης έπαιξε καλεί την tablo.place_move για να τοποθετήσει την κίνηση στο tablo,
         δίνει το αντίστοιχο text στο label (Χ ή Ο)
         Ελέγχει αν υπάρχει νικητής ή ισοπαλία και αν ναι:
-            Σε περίπτωση νίκης καταχωρεί τη νίκη στον πινακα του σκορ και χρωματίζει την νικητήρια στήλη.
-            Στη συνέχεια καλεί την open_winner μέθοδο του Game αντικειμένου
+            1.Σε περίπτωση νίκης καταχωρεί τη νίκη στον πίνακα του σκορ και χρωματίζει τη νικητήρια στήλη.
+            2.Στη συνέχεια καλεί την open_winner μέθοδο του Game αντικειμένου
         αν όχι αυξάνει τον count αλλάζει το όνομα του παίχτη στο label_now_plays ώστε να δείχνει τον παίχτη που
         έχει σειρά να παίξει και καλεί τη μέθοδο click_for_computer η οποία αν ο επόμενος παίχτης είναι human περιμένει
         να πατήσει κάποιο label ο χρήστης
@@ -730,9 +730,10 @@ class PlayTwoComputers(Thread):
            Εντολή που θα τρέξουμε στο Thread
         """
 
-    def __init__(self, game):
+    def __init__(self, game, gc):
         super().__init__()
         self.game = game
+        self.gc = gc
 
     def run(self):
         """
@@ -746,12 +747,12 @@ class PlayTwoComputers(Thread):
         Επιστρέφει
         ----------
         """
-        gc.click_for_computer()
+        self.gc.click_for_computer()
 
 
 class App(tk.Tk):
     """
-        Αρχικό παράθυρο συλογής πληροφοριών
+        Αρχικό παράθυρο συλλογής πληροφοριών
 
         Πεδία
         ----------
@@ -773,14 +774,15 @@ class App(tk.Tk):
         ----------
         button_push()
             συμβάν κατά το πάτημα του submit_button
-            δημιουργεί ένα global αντικείμενο GameControler, ελέγχει αν έχουν πληκτρογηθεί ονόματα και αν οχι
-            βάζει σαν default τα Player1 & Player2 και στη συμέχεια καλή την get_settings μέθοδο
+            δημιουργεί ένα global αντικείμενο GameController, ελέγχει αν έχουν πληκτρολογηθεί ονόματα και αν οχι
+            βάζει σαν default τα Player1 & Player2 και στη συνέχεια καλή την get_settings μέθοδο
             αυτού όπου και τοποθετεί τα πεδία που συμπληρώσαμε. στη συνέχεια καταστρέφει τον εαυτό της
             και καλεί την game_by_couple() του διαχειριστή του παιχνιδιού.
     """
 
-    def __init__(self):
+    def __init__(self, gc):
         super().__init__()
+        self.gc = gc
         self.geometry("+50+50")
         self.title('Tik Tok Toe')
         self.columnconfigure(0, weight=1)
@@ -827,16 +829,15 @@ class App(tk.Tk):
         submit_button.grid(column=2, row=4, sticky=tk.S, padx=5, pady=5)
 
     def button_push(self):
-        global gc
-        gc = GameController()
         if self.player1_entry.get() == "":
             self.player1_entry.insert(0, "Player1")
         if self.player2_entry.get() == "":
             self.player2_entry.insert(0, "Player2")
-        gc.get_settings(self.player1_entry.get(), self.player2_entry.get(), self.cd1.get(), self.cd2.get(),
+        self.gc.get_settings(self.player1_entry.get(), self.player2_entry.get(), self.cd1.get(), self.cd2.get(),
                         self.selected_level1.get(), self.selected_level2.get())
+
         self.destroy()
-        gc.game_by_couple()
+        self.gc.game_by_couple()
 
 
 class Game(tk.Tk):
@@ -897,8 +898,9 @@ class Game(tk.Tk):
         το ίδιο για κάθε labelx_click()
        """
 
-    def __init__(self):
+    def __init__(self, gc):
         super().__init__()
+        self.gc = gc
         self.geometry("+50+50")
         self.title('TikTakToe')
         self.resizable(False, False)
@@ -911,19 +913,19 @@ class Game(tk.Tk):
         self.camvas.grid(column=0, columnspan=2, row=0, pady=(10, 20))
         self.label1 = tk.Label(self.camvas, text="", font=("Arial", 40), width=2)
         self.label1.place(x=20, y=2, width=65, height=65)
-        if gc.couples != 3:
+        if self.gc.couples != 3:
             self.label1.bind("<Button-1>", self.label1_click)
         self.label2 = tk.Label(self.camvas, font=("Arial", 40), width=2)
         self.label2.place(x=95, y=2, width=65, height=65)
-        if gc.couples != 3:
+        if self.gc.couples != 3:
             self.label2.bind("<Button-1>", self.label2_click)
         self.label3 = tk.Label(self.camvas, font=("Arial", 40), width=2)
         self.label3.place(x=170, y=2, width=65, height=65)
-        if gc.couples != 3:
+        if self.gc.couples != 3:
             self.label3.bind("<Button-1>", self.label3_click)
         self.label4 = tk.Label(self.camvas, font=("Arial", 40), width=2)
         self.label4.place(x=20, y=74, width=65, height=65)
-        if gc.couples != 3:
+        if self.gc.couples != 3:
             self.label4.bind("<Button-1>", self.label4_click)
         self.label5 = tk.Label(self.camvas, font=("Arial", 40), width=2)
         self.label5.place(x=95, y=74, width=65, height=65)
@@ -946,9 +948,9 @@ class Game(tk.Tk):
         if gc.couples != 3:
             self.label9.bind("<Button-1>", self.label9_click)
         self.label_now_plays = tk.Label(self, font=("Arial", 15), width=30)
-        self.label_now_plays.config(text="Now Plays: {}".format(gc.current_player().name))
+        self.label_now_plays.config(text="Now Plays: {}".format(self.gc.current_player().name))
         self.label_now_plays.grid(column=0, columnspan=2, row=1, padx=(0, 0), sticky=tk.N)
-        self.camvas_line1 = tk.Canvas(self,width=250, height=10)
+        self.camvas_line1 = tk.Canvas(self, width=250, height=10)
         self.camvas_line1.create_line(0, 5, 250, 5, width=2, fill="grey")
         self.camvas_line1.grid(column=0, columnspan=2, row=2, pady=(5, 5))
         self.score_board_label = tk.Label(self, anchor="center", text="Score",
@@ -959,61 +961,61 @@ class Game(tk.Tk):
         self.label_x.grid(column=0, row=4, padx=(0, 0))
         self.label_y = tk.Label(self, borderwidth=2, text="O", font=("Arial", 20), width=1)
         self.label_y.grid(column=1, row=4, padx=(0, 0))
-        self.score_board_p1 = tk.Label(self, borderwidth=2, text=f"{gc.player1.name}",
+        self.score_board_p1 = tk.Label(self, borderwidth=2, text=f"{self.gc.player1.name}",
                                        font=("Arial", 12), width=20)
         self.score_board_p1.grid(column=0, row=5, padx=(0, 0))
-        self.score_board_p2 = tk.Label(self, text=f"{gc.player2.name}", font=("Arial", 12), width=20)
+        self.score_board_p2 = tk.Label(self, text=f"{self.gc.player2.name}", font=("Arial", 12), width=20)
         self.score_board_p2.grid(column=1, row=5, padx=(0, 0))
         self.camvas_line2 = tk.Canvas(self, width=250, height=10)
         self.camvas_line2.create_line(0, 5, 250, 5, width=2, fill="grey")
         self.camvas_line2.grid(column=0, columnspan=2, row=6, pady=(5, 5))
-        self.score_board_p1score = tk.Label(self, text=f"{gc.score_board.board[gc.player1]}",
+        self.score_board_p1score = tk.Label(self, text=f"{self.gc.score_board.board[self.gc.player1]}",
                                             font=("Arial", 15), width=8)
         self.score_board_p1score.grid(column=0, row=7, pady=(2, 30))
-        self.score_board_p2score = tk.Label(self, text=f"{gc.score_board.board[gc.player2]}",
+        self.score_board_p2score = tk.Label(self, text=f"{self.gc.score_board.board[self.gc.player2]}",
                                             font=("Arial", 15), width=8)
         self.score_board_p2score.grid(column=1, row=7, pady=(2, 30))
 
         # αν οι αντίπαλοι είναι δύο υπολογιστές δημιουργεί ένα Thread αντικείμενο (autoplay)
         # και καλεί τη start του αντικειμένου ώστε να εκτελεστούν οι κινήσεις χωρίς να διακοπεί η
         # επανάληψη του παραθύρου και να μπορούμε να της βλέπουμε τις κινήσεις στην οθόνη.
-        if gc.couples == 3:
-            autoplay = PlayTwoComputers(self)
+        if self.gc.couples == 3:
+            autoplay = PlayTwoComputers(self, self.gc)
             autoplay.start()
         # διαφορετικά αν ο παίκτης που παίζει είναι υπολογιστής καλεί τη μέθοδο play του παίχτη και
         # καλεί την bind του αντίστοιχου label.
-        elif gc.current_player().play(gc.tablo) != 0:
-            eval('self.label{}_click("<Button-1>")'.format(gc.current_player().play(gc.tablo)))
+        elif self.gc.current_player().play(self.gc.tablo, self.gc.other_player()) != 0:
+            eval('self.label{}_click("<Button-1>")'.format(self.gc.current_player().play(self.gc.tablo, self.gc.other_player())))
 
     def open_winner(self):
-        Winner()
+        Winner(self.gc)
 
     def label1_click(self, event):
-        gc.check(1, self.label1, self)
+        self.gc.check(1, self.label1, self)
 
     def label2_click(self, event):
-        gc.check(2, self.label2, self)
+        self.gc.check(2, self.label2, self)
 
     def label3_click(self, event):
-        gc.check(3, self.label3, self)
+        self.gc.check(3, self.label3, self)
 
     def label4_click(self, event):
-        gc.check(4, self.label4, self)
+        self.gc.check(4, self.label4, self)
 
     def label5_click(self, event):
-        gc.check(5, self.label5, self)
+        self.gc.check(5, self.label5, self)
 
     def label6_click(self, event):
-        gc.check(6, self.label6, self)
+        self.gc.check(6, self.label6, self)
 
     def label7_click(self, event):
-        gc.check(7, self.label7, self)
+        self.gc.check(7, self.label7, self)
 
     def label8_click(self, event):
-        gc.check(8, self.label8, self)
+        self.gc.check(8, self.label8, self)
 
     def label9_click(self, event):
-        gc.check(9, self.label9, self)
+        self.gc.check(9, self.label9, self)
 
 
 class Winner(tk.Toplevel):
@@ -1056,7 +1058,8 @@ class Winner(tk.Toplevel):
             καταστρέφει το Game Window
        """
 
-    def __init__(self):
+    def __init__(self, gc):
+        self.gc = gc
         super().__init__()
         self.geometry("+400+350")
         self.title('TikTakToe')
@@ -1064,11 +1067,12 @@ class Winner(tk.Toplevel):
         self.resizable(False, False)
         # Ελέγχει αν υπάρχει νικητής ή είναι ισοπαλία το game και εμφανίζει το ανάλογο label
         # και το όνομα του νικητή αν υπάρχει
-        if gc.check_for_winner():
+        if self.gc.check_for_winner():
             self.label_winner = tk.Label(self, text="The winner is:",
                                          font=("Arial", 13))
             self.label_winner.grid(column=0, row=0)
-            self.label_winner_name = tk.Label(self, text=f"{gc.current_player().name}", font=("Arial", 19), width=24)
+            self.label_winner_name = tk.Label(self, text=f"{self.gc.current_player().name}", font=("Arial", 19),
+                                              width=24)
             self.label_winner_name.grid(column=0, columnspan=2, row=1)
         else:
             self.label_winner = tk.Label(self, text="The Game is DRAW", font=("Arial", 15), width=30)
@@ -1095,15 +1099,14 @@ class Winner(tk.Toplevel):
         self.protocol("WM_DELETE_WINDOW", self.button_end_push)
 
     def button_continue_push(self):
-        gc.new_game()
+        self.gc.new_game()
         self.grab_release()
-        gc.game.destroy()
-        gc.game_by_couple()
+        self.gc.game.destroy()
+        self.gc.game_by_couple()
 
     def button_end_push(self):
-        gc.game.destroy()
+        self.gc.game.destroy()
 
 
 if __name__ == "__main__":
-    app = App()
-    app.mainloop()
+    gc = GameController()
