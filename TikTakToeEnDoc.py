@@ -17,7 +17,7 @@ class Player:
 
     Methods:
     ----------
-    play()
+    play(table, other_player)
         :returns 0
 
     """
@@ -26,6 +26,17 @@ class Player:
         self.name = name
 
     def play(self, table, other_player):
+        """
+                Attributes:
+                ----------
+                table: Table()
+                    The object that manages the table
+                other_player: Player()
+                    The other player
+
+                :returns: int
+                    The position of the move
+        """
         return 0
 
 
@@ -53,6 +64,8 @@ class EasyComPlayer(Player):
         ----------
         table: Table()
             The object that manages the table
+        other_player: Player()
+            The other player
 
         :returns: int
             The position of the move
@@ -90,6 +103,8 @@ class NormalComPlayer(Player):
         ----------
         table: Table()
             The object that manages the table
+        other_player: Player()
+            The opponent
 
         :returns: int
             The position of the move
@@ -141,6 +156,8 @@ class HardComPlayer(Player):
         ----------
         table: Table()
             The object that manages the table
+        other_player: Player()
+            The opponent
 
         :returns: int
             The position of the move
@@ -419,7 +436,7 @@ class GameController:
 
     def __init__(self):
         """
-        Initializes GameController fields
+        Initializes GameController fields and creates the main window
 
         Attributes:
         ----------
@@ -440,6 +457,7 @@ class GameController:
                 1 = human vs human
                 2 = human vs computer
                 3 = computer vs computer
+
         """
         self.player1 = None
         self.player2 = None
@@ -668,6 +686,10 @@ class PlayTwoComputers(Thread):
 
         Attributes:
         ----------
+        game: Game()
+            The game object
+        gc : GameControl()
+            The game control object
 
         Methods:
         ----------
@@ -696,10 +718,12 @@ class PlayTwoComputers(Thread):
 
 class App(tk.Tk):
     """
-        Αρχικό παράθυρο συλλογής πληροφοριών
+        Initial information collection window
 
-        Πεδία
+        Attributes:
         ----------
+        gc : GameController()
+            GameController object
         player1_label : ttk.Label
         player1_entry : ttk.Entry
         cd1 : tk.IntVar
@@ -714,14 +738,13 @@ class App(tk.Tk):
         intell_choise2 : ttk.Combobox
         submit_button : ttk.Button
 
-        Μέθοδοι
+        Methods:
         ----------
         button_push()
-            συμβάν κατά το πάτημα του submit_button
-            δημιουργεί ένα global αντικείμενο GameController, ελέγχει αν έχουν πληκτρολογηθεί ονόματα και αν οχι
-            βάζει σαν default τα Player1 & Player2 και στη συνέχεια καλή την get_settings μέθοδο
-            αυτού όπου και τοποθετεί τα πεδία που συμπληρώσαμε. στη συνέχεια καταστρέφει τον εαυτό της
-            και καλεί την game_by_couple() του διαχειριστή του παιχνιδιού.
+            event when submit_button is pressed
+            checks if names have been typed and sets Player1 & Player2 as default and then calls the get_settings method
+            of the GameController object where it places the fields we filled in then destroys itself
+            and calls game_by_couple() of the game manager object.
     """
 
     def __init__(self, gc):
@@ -786,60 +809,63 @@ class App(tk.Tk):
 
 class Game(tk.Tk):
     """
-        Παράθυρο παιχνιδιού
-        κατά την αρχικοποίηση καλεί τις μεθόδους geometry(ορίζει το μέγεθος και την θέση του παραθύρου),
-        title(λεκτικό για τον τίτλο του παραθύρου), resizable(δεν επιτρέπει την αλλαγή των διαστάσεων
-        του παραθύρου), ελέγχει αν παίζουν δύο υπολογιστές και αν ναι δημιουργεί ένα αντικείμενο
-        PlayTwoComputers και καλεί την μέθοδο του run().
-        Αν δεν παίζουν 2 υπολογιστές ελέγχει αν παίζει human και αν όχι εκτελεί την κίνηση του υπολογιστή
+        Game window
+         during initialization it calls the geometry methods (sets the size and position of the window),
+         title(literal for window title), resizable(does not allow resizing
+         of the window), checks if two computers are playing and if so creates an object
+         PlayTwoComputers and calls its run() method.
+         If 2 computers are not playing it checks if human is playing and if not it executes the computer's move
 
-        Πεδία
+        Attributes:
         ----------
 
+        gc : GameController
+            object of the GameController class
         camvas : tk.Canvas
-           Η περιοχή παιχνιδιού όπου θα σχεδιαστούν οι γραμμές
+           The playing area where the lines will be drawn
         label1 : tk.Label
-            label για την πάνω αριστερή θέση
-        label2 : tk.Label
-            label για την πάνω μεσαία θέση
-        label3 : tk.Label
-            label για την πάνω δεξιά θέση
-        label4 : tk.Label
-            label για την μεσαία αριστερή θέση
-        label5 : tk.Label
-            label για την κεντρική θέση
-        label6 : tk.Label
-            label για την μεσαία δεξιά θέση
-        label7 : tk.Label
-            label για την κάτω αριστερή θέση
-        label8 : tk.Label
-            label για την κάτω μεσαία θέση
-        label9 : tk.Label
-            label για την κάτω δεξιά θέση
+            label for the upper left position
+         label2 : tk.Label
+             label for the upper middle position
+         label3 : tk.Label
+             label for the upper right position
+         label4 : tk.Label
+             label for the middle left position
+         label5 : tk.Label
+             label for the central position
+         label6 : tk.Label
+             label for the middle right position
+         label7 : tk.Label
+             label for the lower left position
+         label8 : tk.Label
+             label for the lower middle position
+         label9 : tk.Label
+             label for the lower right position
         label_now_plays : ttk.Label
-            Εμφανίζει τον παίκτη που πρέπει να παίξει
-        score_board_label : tk.Label
-            Τίτλος για το σκορ
-        score_board_p1 : tk.Label
-            Το όνομα του player1
-        score_board_p2 : tk.Label
-            Το όνομα του player2
-        score_board_p1score : tk.Label
-            To score του player1
-        score_board_p2score : tk.Label
-            To score του player2
-        Στα label1, label2, label3, label4, label5, label6, label7, label8, label9 η μέθοδος bind
-        ενεργοποιείται μόνο αν τουλάχιστον ένας παίκτης είναι human έτσι ώστε αν οι παίχτες είναι και οι δύο computer
-        να μήν δέχεται κινήσεις από τον χρήστη.
-        τα labels τα τοποθετούμε με συντεταγμένες ώστε να τοποθετηθούν πάνω στο camvas και να μήν καλύπτουν τις γραμμές
+             Shows the name of the player that now plays
+         score_board_label : tk.Label
+             Title for the score
+         score_board_p1 : tk.Label
+             The name of player1
+         score_board_p2 : tk.Label
+             The name of player2
+         score_board_p1score : tk.Label
+             Player1's score
+         score_board_p2score : tk.Label
+             Player2's score
+        on label1, label2, label3, label4, label5, label6, label7, label8, label9 the bind method is
+         only activated if at least one player is human so if both players are computer
+         not accept movements from the user.
+         the labels are placed with coordinates so that they are placed on the camvas and do not cover the lines
 
-        Μέθοδοι
+        Methods:
         ----------
         open_winner()
-            καλεί το TopLevel Winner
+            calls TopLevel Winner
         label1_click(event)
-            καλεί την check την εκτελεί με παράμετρο τον αριθμό του κελιού και το label
-        το ίδιο για κάθε labelx_click()
+            calls the check method of GameController object and executes it with parameters of
+            the cell number and the label
+         same for each label<x>_click()
        """
 
     def __init__(self, gc):
@@ -964,42 +990,44 @@ class Game(tk.Tk):
 
 class Winner(tk.Toplevel):
     """
-        Toplevel Παράθυρο Νικητή ή Ισοπαλίας
-        κατά την σρχικοποίηση καλεί την grab_set() ώστε ο χρήστης να μην μπορεί να κάνει κίνηση στο
+        Toplevel Win or Draw Window
+        on initialization it calls grab_set() so that the user cannot make any move to
         Game Window
 
-        Πεδία
+        Attributes:
         ----------
+        gc : GameControl
+            GameControl object
         label_winner : tk.Label
-            Εμφανίζει τον τίτλο Νικη ή Ισοπαλία
+            Displays the title Win or Draw
         label_winner_name : tk.Label
-            Αν έχουμε νικητή εμφανίζει το όνομα του
+            If we have a winner, it shows their name
         label_score : tk.Label
-            Τίτλος για το σκορ
+            Title for the score
         label_p1 : tk.Label
-            Όνομα του player1
+            Name of player1
         label_p2 : tk.Label
-            Όνομα του player2
+            Name of player2
         label_score_p1 : tk.Label
-            Σκορ του player1
+            Player1's score
         label_score_p2 : tk.Label
-            Σκορ του player2
+            Player2's score
         button_continue : tk.Label
-            Κουμπί για συνέχεια του παιχνιδιού
+            Button to continue the game
         button_end : tk.Label
-            Κουμπί για τερματισμό του παιχνιδιού
+            Button to end the game
 
-        Μέθοδοι
+        Methods:
         ----------
         create_widgets()
-            δημιουργεί τα στοιχεία του παραθύρου
+            creates the window elements
         button_continue_push()
-            καλεί την new_game() από το αντικείμενο τύπου GameController που δημιουργήσαμε
-            καλεί την grap_release() για να ελευθερώσει το Game Window
-            καταστρέφει το Game Window
-            και καλεί την game_by_couple() από το αντικείμενο τύπου GameController που δημιουργήσαμε
+            calls new_game() from the GameController object we created
+            calls grap_release() to release the Game Window
+            it crashes the Game Window
+            and calls game_by_couple() from the GameController object we created
         button_end_push()
-            καταστρέφει το Game Window
+            it crashes the Game Window
        """
 
     def __init__(self, gc):
