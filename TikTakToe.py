@@ -27,7 +27,7 @@ class Player:
 
     def play(self, table, other_player):
         """
-                Attributes:
+                Parameters:
                 ----------
                 table: Table()
                     The object that manages the table
@@ -60,7 +60,7 @@ class EasyComPlayer(Player):
 
     def play(self, table , other_player):
         """
-        Attributes:
+        Parameters:
         ----------
         table: Table()
             The object that manages the table
@@ -99,7 +99,7 @@ class NormalComPlayer(Player):
         Checks for a corner position and returns a random corner position
         If none of the above applies, it returns a random position
 
-        Attributes:
+        Parameters:
         ----------
         table: Table()
             The object that manages the table
@@ -152,7 +152,7 @@ class HardComPlayer(Player):
         Checks for a corner position and returns a random corner position
         If none of the above applies, it returns a random position
 
-        Attributes:
+        Parameters:
         ----------
         table: Table()
             The object that manages the table
@@ -217,7 +217,7 @@ class ScoreBoard:
         """
         Adds the win to the player's score
 
-        Attributes:
+        Parameters:
         ----------
         player:Player()
             The winner of the game
@@ -271,7 +271,7 @@ class Table:
         """
         Places the player's movement on the table
 
-        Attributes:
+        Parameters:
         ----------
         player: Player()
             The player who make the move
@@ -287,7 +287,7 @@ class Table:
         """
         returns a list of the positions that have been played
 
-        Attributes:
+        Parameters:
         ----------
         number: int (1 to 9)
             number indicating the position the player played
@@ -303,7 +303,7 @@ class Table:
         """
         returns a list with the positions that have not been played
 
-        Attributes:
+        Parameters:
         ----------
 
        :returns: list
@@ -318,7 +318,7 @@ class Table:
         """
         Checks if the given player can win in one move and returns the position
 
-        Attributes:
+        Parameters:
         ----------
         player: Player()
 
@@ -342,7 +342,7 @@ class Table:
         """
         Checks if the center position is empty and returns 5 otherwise returns None
 
-        Attributes:
+        Parameters:
         ----------
 
         :returns: 5 or None
@@ -357,7 +357,7 @@ class Table:
         """
         checks if there are empty corner positions and returns a random one otherwise returns None
 
-        Attributes:
+        Parameters:
         ----------
 
         :returns: int or None
@@ -374,7 +374,7 @@ class Table:
         """
         returns a random position
 
-        Attributes:
+        Parameters:
         ----------
 
         :returns: int
@@ -438,7 +438,7 @@ class GameController:
         """
         Initializes GameController fields and creates the main window
 
-        Attributes:
+        Parameters:
         ----------
         player1 : Player
             creates player object for 1st player
@@ -474,7 +474,7 @@ class GameController:
         Checks the type of players and creates the Player1 & Player2 objects
         Creates the tablo & score_board objects
 
-        Attributes:
+        Parameters:
         __________
         player1_entry: str
             Name of the 1st player
@@ -517,7 +517,7 @@ class GameController:
         Checks the pair of players and sets the couples.
         It then creates a Game() object and calls the mainloop method
 
-        Attributes:
+        Parameters:
         __________
 
         :returns:
@@ -535,7 +535,7 @@ class GameController:
         """
         He checks the counter and if it is even the player is player1 otherwise player2
 
-        Attributes:
+        Parameters:
         __________
 
         :returns: Player
@@ -550,7 +550,7 @@ class GameController:
         """
         Returns the currently not playing player
 
-        Attributes:
+        Parameters:
         __________
 
         :returns: Player
@@ -565,7 +565,7 @@ class GameController:
         Changes the counters and empties the table if game_count is not divisible by zero
         sets count to 1 for the second player to play first
 
-        Attributes:
+        Parameters:
         __________
 
         :returns:
@@ -579,7 +579,7 @@ class GameController:
         """
         checks if the currently playing player has filled any winning columns and returns True or False
 
-        Attributes:
+        Parameters:
         __________
 
         :returns: bool
@@ -594,7 +594,7 @@ class GameController:
         """
         checks if all seats have been played and if so returns True otherwise False
 
-        Attributes:
+        Parameters:
         __________
 
         :returns: bool
@@ -630,7 +630,7 @@ class GameController:
         has a turn to play and calls the click_for_computer method which if the next player is human waits
         for the user to press a label
 
-        Attributes:
+        Parameters:
         ----------
         number: int (1 to 9)
             number that indicates the move
@@ -664,7 +664,7 @@ class GameController:
         """
         It finds which is the winning row and colors the text on the labels to red
 
-        Attributes:
+        Parameters:
         ----------
 
         :returns:
@@ -708,7 +708,7 @@ class PlayTwoComputers(Thread):
         which calls the click_for_computer method of the GameController object which
         we created
 
-        Attributes:
+        Parameters:
         ----------
 
         :returns:
